@@ -1,0 +1,33 @@
+
+.bg{
+  /* The image used */
+  background-image: url("../../assets/images/loginbg.jpeg");
+  /* Full height */
+  height: 100vh;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.text-color{
+    color: #1c9dd9;
+}
+.cards{
+    /* bottom: 100px; */
+    /* top: 100px; */
+}
+.border-color{
+    border-top: 8px solid;
+    border-color: #1c9dd9;
+}
+.btn-color{
+    background-color: #1c9dd9;
+    color: white;
+    margin: auto;
+    width: 100%;
+
+}
+.logo{
+    width: 150px;
+}
