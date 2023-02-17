@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -6,12 +7,17 @@ import { Component } from '@angular/core';
   styleUrls: ['./sign-up.component.css']
 })
 export class SignUpComponent {
-  constructor() {}
+  display: boolean = false;
+  constructor(private router : Router) {}
 
   ngOnInit() {
    
   }
-  public singUp(){
-
+  public signUp(){  
+    this.display = true
+  }
+  public submitOtp(){
+    // this.display = false;
+    this.router.navigateByUrl('/demographicDetails')
   }
 }

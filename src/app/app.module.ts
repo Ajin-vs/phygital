@@ -7,18 +7,24 @@ import { LoginComponent } from './login/login.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import {ButtonModule} from 'primeng/button';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
+import {DialogModule} from 'primeng/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DemographicDetailsComponent } from './demographic-details/demographic-details.component';
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     SignUpComponent,
-    ForgetPasswordComponent
+    ForgetPasswordComponent,
+    DemographicDetailsComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     NgbModule,
-    ButtonModule
+    ButtonModule,
+    DialogModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

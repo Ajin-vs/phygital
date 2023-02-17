@@ -1,14 +1,15 @@
-<div class="bg-image bg" >
+<div class="bg-image bg">
     <div class="container">
         <div class="">
             <div class="row justify-content-center ">
-                <div class="col-lg-3 col-md-6 col-sm-8 col-11 rounded-5  border-color shadow  position-absolute top-50 start-50 translate-middle bg-light cards">
+                <div
+                    class="col-lg-3 col-md-6 col-sm-8 col-11 rounded-5  border-color shadow  position-absolute top-50 start-50 translate-middle bg-light cards">
                     <div class="card-body">
                         <!-- <h3 class="card-title text-center mb-3 mt-2">Phygital</h3> -->
                         <div class="text-center">
                             <img class="logo mb-3 mt-3" src="../../assets/images/logo.png" alt="">
                             <h5 class="text-color">Sign up</h5>
-                            <hr class="mx-auto" size="3" width="90%" color="#1c9dd9"> 
+                            <hr class="mx-auto" size="3" width="90%" color="#1c9dd9">
                         </div>
                         <form class="p-2">
                             <!-- Email input -->
@@ -16,13 +17,22 @@
                                 <label class="form-label" for="form2Example1">Adhar Number</label>
                                 <input type="email" id="form2Example1" class="form-control" placeholder="1234567890" />
                             </div>
+                            <!-- OTP popup -->
+                            <p-dialog header="Enter OTP" [(visible)]="display"
+                                [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" [closable]="false">
+                                <input type="text" class="form-control mt-2"><br>
+                                <button type="button" pButton class="p-button"
+                                (click)="submitOtp()"
+                                style="background: #1c9dd9;" pButton label="submit"></button>
+                            </p-dialog>
                             <!-- Submit button -->
-                            <button pButton type="button" class="p-button btn-color d-block mb-4" (click)="singUp()" label="Sign up"></button>
-    
+                            <button pButton type="button" class="p-button btn-color d-block mb-4" (click)="signUp()"
+                                label="Sign up"></button>
+
                             <!-- Register buttons -->
                             <div class="text-center">
                                 <p>Alread a member? <a routerLink="/login">Login</a></p>
-                                
+
                             </div>
                         </form>
                     </div>
@@ -30,5 +40,4 @@
             </div>
         </div>
     </div>
-    </div>
-    
+</div>
