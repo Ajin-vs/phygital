@@ -10,6 +10,10 @@ const routes: Routes = [
   { path:'signup', component:SignUpComponent},
   { path: 'demographicDetails', component:DemographicDetailsComponent},
   {path:'forgetPassword', component:ForgetPasswordComponent},
+  {
+    path: 'home',
+    loadChildren: () => import('./user-module/user-module.module').then(m => m.UserModuleModule)
+  },
   { path:'', redirectTo:'/login', pathMatch: 'full'}
 ];
 
