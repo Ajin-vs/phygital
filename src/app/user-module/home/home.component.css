@@ -7,8 +7,8 @@ img {
     width:100%;
     height:100%;
 }
-.bg{
-    background-color: transparent;
+.icon-bg{
+    background-color: #1c9dd9;
 }
 @media screen and (max-width:576px) {
     .pstyle {
