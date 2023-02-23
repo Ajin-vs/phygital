@@ -14,6 +14,7 @@ const routes: Routes = [
     path: 'home',
     loadChildren: () => import('./user-module/user-module.module').then(m => m.UserModuleModule)
   },
+  { path: 'qrCode',  loadChildren: () => import('./qr-code/qr-code.module').then(m => m.QrCodeModule)},
   { path:'', redirectTo:'/login', pathMatch: 'full'}
 ];
 
