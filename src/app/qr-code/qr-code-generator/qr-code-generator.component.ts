@@ -12,10 +12,6 @@ export class QrCodeGeneratorComponent {
   ngOnInit(){
     this.myAngularxQrCode = 'Ajin&9633256745&12132323&Mscd12';
   }
-  public scanSuccessHandler(event:any){
-    console.log(event);
-    
-
-  }
+ 
 
 }
