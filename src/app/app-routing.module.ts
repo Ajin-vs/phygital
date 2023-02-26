@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { BlockChainCrudComponent } from './block-chain/block-chain-crud/block-chain-crud.component';
 import { DemographicDetailsComponent } from './demographic-details/demographic-details.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import { LoginComponent } from './login/login.component';
@@ -15,6 +16,8 @@ const routes: Routes = [
     loadChildren: () => import('./user-module/user-module.module').then(m => m.UserModuleModule)
   },
   { path: 'qrCode',  loadChildren: () => import('./qr-code/qr-code.module').then(m => m.QrCodeModule)},
+  { path: 'transaction',  loadChildren: () => import('./transactions-module/transactions-module.module').then(m => m.TransactionsModuleModule)},
+  {path:'blockChain', component:BlockChainCrudComponent},
   { path:'', redirectTo:'/login', pathMatch: 'full'}
 ];
 

@@ -10,13 +10,17 @@ import { ForgetPasswordComponent } from './forget-password/forget-password.compo
 import {DialogModule} from 'primeng/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DemographicDetailsComponent } from './demographic-details/demographic-details.component';
+import { HttpClientModule } from '@angular/common/http';
+import { BlockChainCrudComponent } from './block-chain/block-chain-crud/block-chain-crud.component';
+import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     SignUpComponent,
     ForgetPasswordComponent,
-    DemographicDetailsComponent
+    DemographicDetailsComponent,
+    BlockChainCrudComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +28,9 @@ import { DemographicDetailsComponent } from './demographic-details/demographic-d
     NgbModule,
     ButtonModule,
     DialogModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

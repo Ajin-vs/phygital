@@ -1,0 +1,21 @@
+<div class="bg">
+    <div class="container p-3">
+        <input type="number"  class="form-control " placeholder="Enter mobile number" [(ngModel)]="mobileNumber" (keyup)="onPhoneNumber()">
+        <p class="">Ensure this is a valid mobile number</p>
+        <hr class="mb-3">
+        <div class=" mb-5">
+            <p class="text-dark mb-4">People</p>
+            <div *ngIf="userDeatils" >
+                <div  *ngFor="let user of userDeatils" (click)="onPayment(user)" class="cursor-pointer">
+                    <p >  <span class="p-1 rounded rounded-5 bg-success me-2">{{getShortName(user?.name)}}</span> {{user?.name}} <br></p>
+                    <p class="ms-4 "> {{user?.mobile}}</p>
+                </div>
+                
+            </div>
+        </div>
+     
+    </div>
+    
+      
+     
+</div>

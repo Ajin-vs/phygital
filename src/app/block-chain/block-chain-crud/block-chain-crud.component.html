@@ -1,0 +1,62 @@
+<div class="container">
+    <h1>Token Test Harness</h1>
+
+    <form action="">
+        Choose your ledger instance:  
+        &nbsp;&nbsp;
+        <!-- <input type="radio" id="tn" name="server"
+          value="wss://s.altnet.rippletest.net:51233" checked>
+        <label for="testnet">Testnet</label> -->
+        &nbsp;&nbsp;
+        <input type="radio" id="dn" name="server"
+          value="wss://s.devnet.rippletest.net:51233">
+        <label for="devnet">Devnet</label>
+        <br/><br/>
+        <button type="button" (click)="getAccountsFromSeeds()">Get Accounts From Seeds</button>
+        <br/>
+        <textarea [(ngModel)]="seed" name="seed"  cols="40" rows= "2"></textarea>
+        <br/><br/>
+        <div class="row">
+
+
+        <div class=" row col-6">
+            <button type="button" (click)="getAccount('standby')">Get New Standby Account</button>
+            Standby Account:
+            <input type="text" [(ngModel)]=standbyAccountField name="standbyAccountField" size="40">
+            Public Key:
+            <input type="text"[(ngModel)]=standbyPubKeyField name="standbyPubKeyField" size="40">
+            Private Key:
+            <input type="text" [(ngModel)]="standbyPrivKeyField" name="standbyPrivKeyField" size="40">
+            Seed:
+            <input type="text" [(ngModel)]="standbySeedField" name="standbySeedField" size="40">
+            XRP Balance:
+            <input type="text" [(ngModel)]="standbyBalanceField" name="standbyBalanceField" size="40">
+            Amount:
+            <input type="text" [(ngModel)]="standbyAmountField" name="standbyAmountField" size="40">
+            Destination:
+            <input type="text" [(ngModel)]="standbyDestinationField" name="standbyDestinationField" size="40">
+            <textarea [(ngModel)]="results" name="standbyResultField"  cols="50" rows="10" class="mb-2" ></textarea>
+            <button type="button" class="btn btn-primary" (click)="sendXRP()">Send XRP&#62;</button>
+        </div>
+        <div class="ms-3 row col-6">
+            <button type="button" onClick="getAccount('operational')">Get New Operational Account</button>
+            Operational Account:
+            <input type="text" id="operationalAccountField" size="40">
+            Public Key:
+            <input type="text" id="operationalPubKeyField" size="40">
+            Private Key:
+            <input type="text" id="operationalPrivKeyField" size="40">
+            Seed:
+            <input type="text" [(ngModel)]="operationalSeedField" name="operationalSeedField" size="40">
+            XRP Balance:
+            <input type="text" id="operationalBalanceField" size="40">
+            Amount:
+            <input type="text" id="operationalAmountField" size="40">
+            Destination:
+            <input type="text" id="operationalDestinationField" size="40">
+            <textarea id="operationalResultField" cols="80" rows="10" class="mb-2" ></textarea>
+            <button type="button"  class="btn btn-primary" onClick="oPsendXRP()">&#60;Send XRP</button>
+        </div>
+    </div>
+    </form>
+</div>

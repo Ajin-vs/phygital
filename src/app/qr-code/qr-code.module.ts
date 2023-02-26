@@ -17,7 +17,7 @@ import { QrCodeScannerComponent } from './qr-code-scanner/qr-code-scanner.compon
     CommonModule,
     QrCodeRoutingModule,
     ZXingScannerModule,
-    QRCodeModule
+    QRCodeModule,
   ]
 })
 export class QrCodeModule { }
