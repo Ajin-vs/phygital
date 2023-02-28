@@ -6,10 +6,24 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class TransactionServiceService {
-  public domain ='http://192.168.129.122:3000'
+  public domain ='http://localhost:3000'
   constructor(public httpClient: HttpClient) { }
 
   public getUser(number:number):Observable<any>{
     return this.httpClient.get(this.domain + '/getUser',{params:{number:number}})
+  }
+
+  public validatePin(mobile:number,cbdcPin:number):Observable<any>{
+    return this.httpClient.get(this.domain +'/verifyPin',{params:{mobile:mobile,cbdcPin:cbdcPin}})
+  }
+  public sendXrp(standbySeedField:any,standbyAmountField:any,standbyDestinationField:any):Observable<any>{
+    return this.httpClient.post(this.domain + '/sendXrp',{standbySeedField,standbyAmountField,standbyDestinationField} )
+  }
+  public getBalance(pSeed:string):Observable<any>{
+    return this.httpClient.get( this.domain+'/balance',{params:{pSeed:pSeed}})
+  }
+
+  public getTxHistory(pKey:any):Observable<any>{
+    return this.httpClient.get(this.domain + '/getTxRequest',{params:{pKey:pKey}})
   }
 }

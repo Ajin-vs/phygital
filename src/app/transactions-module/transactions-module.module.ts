@@ -6,18 +6,19 @@ import { CommonModule } from '@angular/common';
 import { PaymentComponent } from './payment/payment.component';
 import {DialogModule} from 'primeng/dialog';
 import { PayComponentComponent } from './pay-component/pay-component.component';
-
+import {ToastModule} from 'primeng/toast';
 @NgModule({
   declarations: [
     SearchComponentComponent,
     PaymentComponent,
-    PayComponentComponent
+    PayComponentComponent,
   ],
   imports: [
     CommonModule,
     TransactionsModuleRoutingModule,
     FormsModule,
-    DialogModule
+    DialogModule,
+    ToastModule
   ]
 })
 export class TransactionsModuleModule { }

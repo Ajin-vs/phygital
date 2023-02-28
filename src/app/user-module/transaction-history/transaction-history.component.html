@@ -1,0 +1,23 @@
+<div class="bg pt-5">
+    <div class="bg-white  fixed-top shadow">
+        <h3 class="text-center mt-3 ">Transaction history</h3>
+        
+    </div>
+    
+<div *ngFor="let transactionDetails of transactionDetails" class="row ">
+    <div class="mt-5 col-2">
+        <span class="p-3 rounded rounded-5 icon-bg">AV</span>
+    </div>
+    <div class=" mt-5 text-start col-6">
+        <strong *ngIf="transactionDetails.tx.Destination == senderId">{{transactionDetails.tx.Account | slice:0:9 }}</strong>
+        <strong *ngIf="transactionDetails.tx.Destination != senderId">{{ transactionDetails.tx.Destination | slice:0:9}}</strong>
+        <br>
+        <p>{{rippleTimeToISOTime(transactionDetails.tx.date) | date:'medium' }}</p>
+    </div>
+    <div class=" mt-5 col-4">
+        <p *ngIf="transactionDetails.tx.Destination == senderId" class="text-success text-left">+{{transactionDetails.tx.Amount/1000000}}</p>
+        <p *ngIf="transactionDetails.tx.Destination != senderId" class="text-danger text-left">-{{transactionDetails.tx.Amount/1000000}}</p>
+    </div>
+</div>
+
+</div>
