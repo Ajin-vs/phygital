@@ -1,2 +1,5 @@
-<zxing-scanner  (scanSuccess)="scanSuccessHandler($event)"></zxing-scanner>
-<div class="text-success">{{scanResult}}</div>
+<div class="position-absolute top-50 start-50 translate-middle">
+    <zxing-scanner [enable]="scannerEnabled" 
+       (scanSuccess)="scanSuccessHandler($event)"
+        [autofocusEnabled]="true" class="zxing-scanner"></zxing-scanner>
+</div>
