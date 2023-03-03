@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { TransactionServiceService } from '../transaction-service.service';
 
@@ -19,13 +20,23 @@ export class PaymentComponent {
   transfered=false;
   sender:any = sessionStorage.getItem('sender')
   audio:any;
+  mobile:any
   // {mobile:9748636760,pSeed:'sEdSFvqSN51N6PmrY2Zdqy6uJ51FfFn'};
-  constructor(private transactionService : TransactionServiceService, private messageService: MessageService){
+  constructor(private transactionService : TransactionServiceService, private messageService: MessageService,private route :ActivatedRoute){
+
     
   }
  ngOnInit(){
+  this.mobile = this.route.snapshot.paramMap.get('mobile');
   this.reciever = sessionStorage.getItem('reciever');
+  this.transactionService.getUser(this.mobile).subscribe(data=>{
+    this.reciever = JSON.stringify(data.user[0])
+    console.log(this.reciever);
+    
+  })
+ 
   this.audio = new Audio("../../../assets/audio/success-1-6297.mp3");
+
  }
     showDialog() {
         this.display = true;
