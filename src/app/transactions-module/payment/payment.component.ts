@@ -29,11 +29,12 @@ export class PaymentComponent {
  ngOnInit(){
   this.mobile = this.route.snapshot.paramMap.get('mobile');
   this.reciever = sessionStorage.getItem('reciever');
-  this.transactionService.getUser(this.mobile).subscribe(data=>{
-    this.reciever = JSON.stringify(data.user[0])
-    console.log(this.reciever);
-    
-  })
+  if(this.mobile){
+    this.transactionService.getUser(this.mobile).subscribe(data=>{
+      this.reciever = JSON.stringify(data.user[0])      
+    })
+  }
+  
  
   this.audio = new Audio("../../../assets/audio/success-1-6297.mp3");
 
