@@ -7,18 +7,32 @@ import { PaymentComponent } from './payment/payment.component';
 import {DialogModule} from 'primeng/dialog';
 import { PayComponentComponent } from './pay-component/pay-component.component';
 import {ToastModule} from 'primeng/toast';
+import { AtmRequestComponent } from './atm-request/atm-request.component';
+import {AccordionModule} from 'primeng/accordion';
+import {ScrollerModule} from 'primeng/scroller';
+import { ReactiveFormsModule } from '@angular/forms';
+
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
+
 @NgModule({
   declarations: [
     SearchComponentComponent,
     PaymentComponent,
     PayComponentComponent,
+    AtmRequestComponent,
   ],
   imports: [
     CommonModule,
     TransactionsModuleRoutingModule,
     FormsModule,
     DialogModule,
-    ToastModule
-  ]
+    ToastModule,
+    AccordionModule,
+    ReactiveFormsModule,
+    ConfirmDialogModule,
+    ScrollerModule
+  ],
+  providers: [ConfirmationService,MessageService]
 })
 export class TransactionsModuleModule { }

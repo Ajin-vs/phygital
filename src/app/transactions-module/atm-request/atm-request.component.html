@@ -1,0 +1,48 @@
+<div class="">
+    <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+    <p-toast  position="center"></p-toast>
+
+    
+    <div class="container  pt-5 text-center">
+        <h4>ATM withdrawal requests</h4>
+        <hr>
+    </div>
+    <p-dialog header="ATM withdrawal request" [(visible)]="displayModal" [modal]="true" [style]="{width: '95%'}"
+        [draggable]="false" [resizable]="false" styleClass="position-absolute ">
+        <form  [formGroup]="escrowForm" (ngSubmit)="onSubmit()">
+            
+                <label for="otp"><small class="text-danger">*</small>OTP:</label>
+                <input type="number" id="otp" class="form-control" ng-maxlength="5" [autofocus]=true  formControlName="otp">
+                <label for="amount"><small class="text-danger">*</small>Amount(in CBDC):</label>
+                <input type="number" id="amount" class="form-control"  formControlName="amount">
+                <div *ngIf="escrowForm.invalid && escrowForm.touched" class="text-danger">
+                   Enter the required Fileds
+                  </div>
+          
+           
+            <hr>
+            <button icon="pi pi-check" styleClass="p-button-text"
+                    class="btn  btn-dark mt-2 float-end" type="submit"> Send Request</button>
+        </form>
+
+    </p-dialog>
+   
+    <div class="p-accord  p-3">
+        <p-accordion class="mt-5">
+            <p-accordionTab class="m-3" *ngFor="let escrows of validEscrow">
+                <ng-template pTemplate="header">Amount ₹ {{escrows?.Amount}}<button (click)="onCancelEscrow()"  class="mx-auto btn btn-danger"  label="">Cancel Request</button>
+                     </ng-template>
+                <ng-template pTemplate="content">
+                    <p>SequnceNo: {{escrow?.sequence}}</p>
+                    <p>OTP: {{escrow.otp}}</p>
+                </ng-template>
+            </p-accordionTab>
+        </p-accordion>
+    </div>
+
+    <div class=" p-3 fixed-bottom  bg-light ">
+        <button class="btn icon-bg  text-light float-right" (click)="onNewRequest()"> Create new ATM withdrawal
+            request</button>
+    </div>
+
+</div>
