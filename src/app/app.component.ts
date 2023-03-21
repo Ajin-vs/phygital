@@ -9,39 +9,44 @@ import { Toast } from '@capacitor/toast';
 })
 export class AppComponent {
   title = 'phygital_ui';
-  backEvent =0;
+  backEvent = 0;
 
-  constructor(private router : Router){
- 
-    App.addListener('backButton', ()=>{
-      console.log("curetn url",this.router.url);
-      
-      if(this.router.url.includes('/home')){
-        if(this.backEvent == 0){
+  constructor(private router: Router) {
+
+    App.addListener('backButton', () => {
+
+      if (this.router.url === '/home') {
+        if (this.backEvent == 0) {
           Toast.show({
             text: 'Please click BACK again to exit!',
-            duration:'short'
+            duration: 'short'
           });
         }
-       
-        this.backEvent = this.backEvent +1;
+
+        this.backEvent = this.backEvent + 1;
         setTimeout(() => {
           this.backEvent = 0;
         }, 2000);
-        if(this.backEvent == 2){
+        if (this.backEvent == 2) {
           App.exitApp();
         }
       }
-      
-    
-      if(this.backEvent !== 2){
+
+
+      if (this.backEvent !== 2) {
         window.history.back();
       }
-      
+
     })
 
-  
-   
+
+    App.addListener('pause', () => {
+      localStorage.removeItem("bio");
+    })
+
+
+
   }
-  
+
+
 }
