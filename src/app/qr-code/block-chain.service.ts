@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class BlockChainService {
-  public domain ='http://localhost:3000'
+  public domain ='http:// 192.168.29.187:3000'
   constructor(public httpClient: HttpClient) { }
 
   public getConnection():Observable<any>{

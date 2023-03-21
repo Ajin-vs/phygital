@@ -19,7 +19,7 @@ export class HomeComponent {
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
       { label: 'OFF', value: 'Offline' },
-      { label: 'MF', value: 'MicroFinance' },
+      { label: 'LOAN', value: 'MicroFinance' },
     ];
 
   }

@@ -12,14 +12,19 @@
                 <!-- <i class="pi pi-eye text-light m-1"
                                             style="font-size: 1.5rem"></i> -->
                 <h4> <strong> e₹ {{balance}}</strong></h4>
-
+                <div class=" w-25 d-flex flex-column float-end justify-content-between ">
+                    <button (click)="value3 = item.value"  *ngFor="let item of justifyOptions "  class="btn mb-2" [ngClass]="(value3==item.value) ? 'bg-success border' : 'bg-info'"><strong>{{item.label}}</strong></button>
+                    <!-- <button class="btn btn-danger mb-2">OFF</button>
+                    <button class="btn btn-danger">Loan</button> -->
+                </div>
             </div>
             
-            <div class="mt-5 ms-2">
-                <p-selectButton [options]="justifyOptions" [(ngModel)]="value3" optionValue="value">
+
+            <!-- <div >
+                <p-selectButton [options]="justifyOptions" [(ngModel)]="value3" optionValue="value" class="d-flex flex-row">
                         <p  *ngFor="let item of justifyOptions " [ngClass]="(value3==item.value) ? 'text-success border' : 'text-danger'" > <strong>{{item.label}}</strong></p>
                 </p-selectButton>
-            </div>
+            </div> -->
         </div>
         <img src="../../../assets/images/homeImage.jpeg" class="img rounded rounded-5 shadow" alt="">
         <!-- <img src="Downloads/test.png" class="img rounded rounded-5 shadow" alt=""> -->
