@@ -8,7 +8,7 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  sender:any ={mobile:9748636760,pSeed:'sEdSFvqSN51N6PmrY2Zdqy6uJ51FfFn',publicKey:'rNyToJhc2fAFwx7g8tuD6cjQvtQPthGe7t'};
+  sender:any ={mobile:9748636760,pSeed:'sEdSqU1ifnZaS11TDYdF2RUdhABJfHv',publicKey:'rfnnjz946BB1TBdDUHzyns2SaFQLhhyfFK'};
   constructor( private router : Router, private authService : AuthService) {}
 
   ngOnInit() {

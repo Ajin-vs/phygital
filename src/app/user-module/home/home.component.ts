@@ -10,9 +10,17 @@ import { Observable } from 'rxjs';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  balance: number = 0
-  sender: any = sessionStorage.getItem('sender')
-  constructor(private transationService: TransactionServiceService) {
+
+  balance:number=0
+  sender:any =sessionStorage.getItem('sender');
+  justifyOptions: any[] =[];
+  value3: any ="Online";
+  constructor(private transationService : TransactionServiceService){
+    this.justifyOptions = [
+      { label: 'ON', value: 'Online' },
+      { label: 'OFF', value: 'Offline' },
+      { label: 'MF', value: 'MicroFinance' },
+    ];
 
   }
   ngOnInit() {

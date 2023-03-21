@@ -7,6 +7,8 @@ import { UserModuleRoutingModule } from './user-module-routing.module';
 import { HomeComponent } from './home/home.component';
 import { UserParentComponent } from './user-parent/user-parent.component';
 import { TransactionHistoryComponent } from './transaction-history/transaction-history.component';
+import {SelectButtonModule} from 'primeng/selectbutton';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -19,7 +21,9 @@ import { TransactionHistoryComponent } from './transaction-history/transaction-h
     CommonModule,
     CardModule,
     ButtonModule,
-    UserModuleRoutingModule
+    UserModuleRoutingModule,
+    SelectButtonModule,
+    FormsModule
   ]
 })
 export class UserModuleModule { }
