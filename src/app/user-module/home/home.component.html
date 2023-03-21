@@ -12,8 +12,8 @@
                 <!-- <i class="pi pi-eye text-light m-1"
                                             style="font-size: 1.5rem"></i> -->
                 <h4> <strong> e₹ {{balance}}</strong></h4>
-                <div class=" w-25 d-flex flex-column float-end justify-content-between ">
-                    <button (click)="value3 = item.value"  *ngFor="let item of justifyOptions "  class="btn mb-2" [ngClass]="(value3==item.value) ? 'bg-success border' : 'bg-info'"><strong>{{item.label}}</strong></button>
+                <div class="  d-flex flex-column float-end justify-content-between ">
+                    <h4 (click)="value3 = item.value"  *ngFor="let item of justifyOptions "  class="text-center mb-2" [ngClass]="(value3==item.value) ? 'bg-success border' : 'bg-info'"><strong class="badge text-center">{{item.label}}</strong></h4>
                     <!-- <button class="btn btn-danger mb-2">OFF</button>
                     <button class="btn btn-danger">Loan</button> -->
                 </div>
@@ -40,16 +40,22 @@
 
                 <div class="d-flex justify-content-around text-center">
                     <span>
+                        <i routerLink="/qrCode" class="pi pi-plus shadow icon-bg text-light p-3 rounded rounded-2"
+                            style="font-size: 1.5rem"></i>
+                        <br>
+                        <strong>Load</strong>
+                    </span>
+                    <span>
                         <i class="pi pi-arrow-up shadow text-light icon-bg p-3 rounded rounded-2"
                             style="font-size: 1.5rem" routerLink="/transaction"></i>
                         <br>
                         <strong>Send</strong>
                     </span>
                     <span>
-                        <i routerLink="/qrCode" class="pi pi-plus shadow icon-bg text-light p-3 rounded rounded-2"
+                        <i class="pi pi-minus shadow icon-bg text-light p-3 rounded rounded-2"
                             style="font-size: 1.5rem"></i>
                         <br>
-                        <strong>Collect</strong>
+                        <strong>Redeem</strong>
                     </span>
                     <span>
                         <i class="pi pi-briefcase shadow icon-bg text-light p-3 rounded rounded-2"
@@ -63,12 +69,7 @@
                         <br>
                         <strong>Load</strong>
                     </span> -->
-                    <span>
-                        <i class="pi pi-credit-card shadow icon-bg text-light p-3 rounded rounded-2"
-                            style="font-size: 1.5rem"></i>
-                        <br>
-                        <strong>Redeem</strong>
-                    </span>
+                    
                 </div>
             </div>
 
