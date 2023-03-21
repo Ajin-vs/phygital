@@ -11,9 +11,9 @@
         [draggable]="false" [resizable]="false" styleClass="position-absolute ">
         <form  [formGroup]="escrowForm" (ngSubmit)="onSubmit()">
             
-                <label for="otp"><small class="text-danger">*</small>OTP:</label>
+                <label for="otp"><small class="text-danger">*</small><strong> OTP:</strong></label>
                 <input type="number" id="otp" class="form-control" ng-maxlength="5" [autofocus]=true  formControlName="otp">
-                <label for="amount"><small class="text-danger">*</small>Amount(in CBDC):</label>
+                <label for="amount"><small class="text-danger">*</small><strong> Amount:</strong></label>
                 <input type="number" id="amount" class="form-control"  formControlName="amount">
                 <div *ngIf="escrowForm.invalid && escrowForm.touched" class="text-danger">
                    Enter the required Fileds
@@ -30,12 +30,14 @@
     <div class="p-accord  p-3">
         <p-accordion class="mt-5">
             <p-accordionTab class="m-3" *ngFor="let escrows of validEscrow">
-                <ng-template pTemplate="header">Amount ₹ {{escrows?.Amount}}<button (click)="onCancelEscrow()"  class="mx-auto btn btn-danger"  label="">Cancel Request</button>
+                <ng-template pTemplate="header"><strong>Amount ₹ {{escrows?.Amount}}</strong> 
                      </ng-template>
                 <ng-template pTemplate="content">
                     <p>SequnceNo: {{escrow?.sequence}}</p>
                     <p>OTP: {{escrow?.otp}}</p>
+                    <button (click)="onCancelEscrow()"  class="float-end btn btn-danger"  label="">Cancel Request</button>
                 </ng-template>
+                
             </p-accordionTab>
         </p-accordion>
     </div>

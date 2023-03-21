@@ -2,19 +2,27 @@
     <i class="pi pi-user rounded rounded-5 shadow bg-success text-light p-3 mb-3" style="font-size: 1.5rem"></i>
     <strong class="ms-3 fs-2">Ajin</strong>
     <i class="pi pi-sign-out rounded rounded-5   text-dark p-3 mb-3 float-end" style="font-size: 1.5rem"></i>
-
+    <div>
+        <h4 class="text-center text-light"> <strong>{{value3}} Mode</strong></h4>
+    </div>
     <div class="pstyle position-relative ">
         <div class="position-absolute top-0 w-100">
             <div class="container mt-2 text-light">
                 <p>Current Balance</p>
                 <!-- <i class="pi pi-eye text-light m-1"
                                             style="font-size: 1.5rem"></i> -->
-                <h5>e₹ {{balance}}</h5>
+                <h4> <strong> e₹ {{balance}}</strong></h4>
 
             </div>
-
+            
+            <div class="mt-5 ms-2">
+                <p-selectButton [options]="justifyOptions" [(ngModel)]="value3" optionValue="value">
+                        <p  *ngFor="let item of justifyOptions " [ngClass]="(value3==item.value) ? 'text-success border' : 'text-danger'" > <strong>{{item.label}}</strong></p>
+                </p-selectButton>
+            </div>
         </div>
-        <img src="../../../assets/images/1024450-re.jpg" class="img rounded rounded-5 shadow" alt="">
+        <img src="../../../assets/images/homeImage.jpeg" class="img rounded rounded-5 shadow" alt="">
+        <!-- <img src="Downloads/test.png" class="img rounded rounded-5 shadow" alt=""> -->
 
         <div class="position-absolute bottom-0 w-100">
             <div class="container text-white">
@@ -33,7 +41,7 @@
                         <strong>Send</strong>
                     </span>
                     <span>
-                        <i routerLink="/qrCode" class="pi pi-arrow-down shadow icon-bg text-light p-3 rounded rounded-2"
+                        <i routerLink="/qrCode" class="pi pi-plus shadow icon-bg text-light p-3 rounded rounded-2"
                             style="font-size: 1.5rem"></i>
                         <br>
                         <strong>Collect</strong>

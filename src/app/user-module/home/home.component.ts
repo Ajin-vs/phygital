@@ -8,9 +8,15 @@ import { TransactionServiceService } from 'src/app/transactions-module/transacti
 })
 export class HomeComponent {
   balance:number=0
-  sender:any =sessionStorage.getItem('sender')
+  sender:any =sessionStorage.getItem('sender');
+  justifyOptions: any[] =[];
+  value3: any ="Online";
   constructor(private transationService : TransactionServiceService){
-
+    this.justifyOptions = [
+      { label: 'ON', value: 'Online' },
+      { label: 'OFF', value: 'Offline' },
+      { label: 'MF', value: 'MicroFinance' },
+    ];
   }
   ngOnInit(){
     this.transationService.getBalance(JSON.parse(this.sender).pSeed).subscribe(data=>{

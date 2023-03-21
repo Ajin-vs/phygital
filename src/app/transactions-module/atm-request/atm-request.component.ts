@@ -57,10 +57,10 @@ export class AtmRequestComponent {
           this.transactionService.cancelEscrow(JSON.parse(this.sender).pSeed,this.escrow).subscribe(data=>{
             this.audio.play();
             this.messageService.add({severity:'error', detail: data.meta.TransactionResult});
-
-            // if( ){
-
-            // }
+           
+            if( data.meta.TransactionResult !== "tesSUCCESS" ){
+              this.getEscrow();
+            }
           })
         }
     });}
