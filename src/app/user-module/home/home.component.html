@@ -11,7 +11,7 @@
                 <p>Current Balance</p>
                 <!-- <i class="pi pi-eye text-light m-1"
                                             style="font-size: 1.5rem"></i> -->
-                <h4> <strong> e₹ {{balance}}</strong></h4>
+                <h4> <strong> e₹ 1000</strong></h4>
                 <div class="  d-flex flex-column float-end justify-content-between ">
                     <h4 (click)="value3 = item.value"  *ngFor="let item of justifyOptions "  class="text-center mb-2" [ngClass]="(value3==item.value) ? 'bg-success border' : 'bg-info'"><strong class="badge text-center">{{item.label}}</strong></h4>
                     <!-- <button class="btn btn-danger mb-2">OFF</button>
@@ -50,6 +50,12 @@
                             style="font-size: 1.5rem"></i>
                         <br>
                         <strong>Account QR</strong>
+                    </span>
+                    <span>
+                        <i routerLink="/qrCode" class="pi pi-arrow-down shadow icon-bg text-light p-3 rounded rounded-2"
+                            style="font-size: 1.5rem"></i>
+                        <br>
+                        <strong>Receive</strong>
                     </span>
                    
                     <!-- <span>
