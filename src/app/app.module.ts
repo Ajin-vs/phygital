@@ -30,7 +30,8 @@ import { FormsModule } from '@angular/forms';
     DialogModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

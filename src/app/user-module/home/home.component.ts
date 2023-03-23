@@ -14,7 +14,8 @@ export class HomeComponent {
   balance:number=0
   sender:any =sessionStorage.getItem('sender');
   justifyOptions: any[] =[];
-  value3: any ="Online";
+  value3: any ="MicroFinance";
+  checked=false
   constructor(private transationService : TransactionServiceService){
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },

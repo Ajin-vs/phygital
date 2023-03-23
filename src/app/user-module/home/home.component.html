@@ -8,17 +8,23 @@
     <div class="pstyle position-relative ">
         <div class="position-absolute top-0 w-100">
             <div class="container mt-2 text-light">
-                <p>Current Balance</p>
+<!-- <div >
+    <p-inputSwitch [(ngModel)]="checked"></p-inputSwitch>
+    <h4 class="ml-2"> Loan Agent</h4>
+</div> -->
+                <!-- <p>Current Balance</p> -->
                 <!-- <i class="pi pi-eye text-light m-1"
                                             style="font-size: 1.5rem"></i> -->
-                <h4> <strong> e₹ {{balance}}</strong></h4>
+                <!-- <h4> <strong> e₹ {{balance}}</strong></h4> -->
                 <div class="  d-flex flex-column float-end justify-content-between ">
-                    <h4 (click)="value3 = item.value"  *ngFor="let item of justifyOptions "  class="text-center mb-2" [ngClass]="(value3==item.value) ? 'bg-success border' : 'bg-info'"><strong class="badge text-center">{{item.label}}</strong></h4>
+                    <h4 (click)="value3 = item.value" *ngFor="let item of justifyOptions " class="text-center mb-2"
+                        [ngClass]="(value3==item.value) ? 'bg-success border' : 'bg-info'"><strong
+                            class="badge text-center">{{item.label}}</strong></h4>
                     <!-- <button class="btn btn-danger mb-2">OFF</button>
                     <button class="btn btn-danger">Loan</button> -->
                 </div>
             </div>
-            
+
 
             <!-- <div >
                 <p-selectButton [options]="justifyOptions" [(ngModel)]="value3" optionValue="value" class="d-flex flex-row">
@@ -35,10 +41,11 @@
                 <h4>Digital Rupee Wallet</h4>
             </div>
 
-            <div class="rounded rounded-3 shadow bg-white p-5">
+            <div class="rounded rounded-3 shadow bg-white p-2">
+                <h3 class="text-center">Existing Loans</h3>
+                <hr>
 
-
-                <div class="d-flex justify-content-around text-center">
+                <!-- <div class="d-flex justify-content-around text-center">
                     <span>
                         <i routerLink="/qrCode" class="pi pi-plus shadow icon-bg text-light p-3 rounded rounded-2"
                             style="font-size: 1.5rem"></i>
@@ -56,34 +63,66 @@
                             style="font-size: 1.5rem"></i>
                         <br>
                         <strong>Redeem</strong>
-                    </span>
-                    <span>
+                    </span> -->
+                <!-- <span>
                         <i class="pi pi-briefcase shadow icon-bg text-light p-3 rounded rounded-2"
                             style="font-size: 1.5rem" routerLink="/transaction/atmRequest"></i>
                         <br>
                         <strong>ATM</strong>
-                    </span>
-                    <!-- <span>
+                    </span> -->
+                <!-- <span>
                         <i class="pi pi-bolt shadow icon-bg text-light p-3 rounded rounded-2"
                             style="font-size: 1.5rem"></i>
                         <br>
                         <strong>Load</strong>
                     </span> -->
-                    
-                </div>
+
+                <!-- </div> -->
+
+
             </div>
 
         </div>
     </div>
-    <div class="">
+    <div class="  mb-5">
+        <div class="p-accord">
+            <p-accordion class="mt-3">
+                <p-accordionTab class="m-3">
+                    <ng-template pTemplate="header"><strong>Loan 1 </strong>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <h5> Due Amount: 100 ₹</h5>
+                        <!-- <p>OTP:</p> -->
+                        <button class="float-end btn btn-primary" label="">Pay Lender</button>
+                    </ng-template>
+
+                </p-accordionTab>
+                <p-accordionTab class="m-3">
+                    <ng-template pTemplate="header"><strong>Loan 2 </strong>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <h5> Due Amount: 100 ₹</h5>
+                        <!-- <p>OTP:</p> -->
+                        <button class="float-end btn btn-primary" label="">Pay Lender</button>
+                    </ng-template>
+
+                </p-accordionTab>
+            </p-accordion>
+        </div>
+
+
+    </div>
+
+
+    <!-- <div class="">
         <div class="pt-4 text-center">
             <i routerLink="/qrCode/scanner" class="pi pi-qrcode shadow p-4 border border-primary icon-bg rounded rounded-2"
                 style="font-size: 1.5rem"></i>
         </div>
-    </div>
+    </div> -->
 
 
-    <div class="p-3 ">
+    <!-- <div class="p-3 ">
         <h4 class="pb-2">People</h4>
         <div class="d-flex justify-content-around text-center text-white mb-5">
             <span class="p-3  rounded rounded-5 icon-bg">AV</span>
@@ -93,6 +132,6 @@
 
         </div>
 
-    </div>
-   
+    </div> -->
+
 </div>

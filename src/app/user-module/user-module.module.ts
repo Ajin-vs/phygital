@@ -9,7 +9,8 @@ import { UserParentComponent } from './user-parent/user-parent.component';
 import { TransactionHistoryComponent } from './transaction-history/transaction-history.component';
 import {SelectButtonModule} from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
-
+import { AccordionModule } from 'primeng/accordion';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,9 @@ import { FormsModule } from '@angular/forms';
     ButtonModule,
     UserModuleRoutingModule,
     SelectButtonModule,
-    FormsModule
+    FormsModule,
+    AccordionModule,
+    InputSwitchModule
   ]
 })
 export class UserModuleModule { }
