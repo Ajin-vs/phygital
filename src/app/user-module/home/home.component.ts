@@ -2,8 +2,10 @@ import { Component } from '@angular/core';
 import { BiometryType, NativeBiometric } from 'capacitor-native-biometric';
 import { TransactionServiceService } from 'src/app/transactions-module/transaction-service.service';
 import { App } from '@capacitor/app';
-import { Observable } from 'rxjs';
 
+
+
+// import {Client} from "xrpl";
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -14,8 +16,9 @@ export class HomeComponent {
   balance:number=0
   sender:any =sessionStorage.getItem('sender');
   justifyOptions: any[] =[];
-  value3: any ="Online";
+  value3: any ="Offline";
   constructor(private transationService : TransactionServiceService){
+    
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
       { label: 'OFF', value: 'Offline' },

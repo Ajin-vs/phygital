@@ -10,7 +10,6 @@ import { TransactionHistoryComponent } from './transaction-history/transaction-h
 import {SelectButtonModule} from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
 
-
 @NgModule({
   declarations: [
     HomeComponent,
@@ -23,7 +22,8 @@ import { FormsModule } from '@angular/forms';
     ButtonModule,
     UserModuleRoutingModule,
     SelectButtonModule,
-    FormsModule
+    FormsModule,
+  
   ]
 })
 export class UserModuleModule { }
