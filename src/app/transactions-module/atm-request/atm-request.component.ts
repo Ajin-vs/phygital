@@ -9,7 +9,7 @@ import { TransactionServiceService } from '../transaction-service.service';
   styleUrls: ['./atm-request.component.css']
 })
 export class AtmRequestComponent {
-  sender:any = sessionStorage.getItem('sender')
+  sender:any = localStorage.getItem('sender')
   validEscrow :any =[]
   escrow:any=null;
   audio = new Audio("../../../assets/audio/success-1-6297.mp3");

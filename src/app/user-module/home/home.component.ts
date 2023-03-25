@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 export class HomeComponent {
 
   balance:number=0
-  sender:any =sessionStorage.getItem('sender');
+  sender:any =localStorage.getItem('sender');
   justifyOptions: any[] =[];
   value3: any ="Online";
   constructor(private transationService : TransactionServiceService){

@@ -7,7 +7,7 @@ import { TransactionServiceService } from 'src/app/transactions-module/transacti
   styleUrls: ['./transaction-history.component.css']
 })
 export class TransactionHistoryComponent {
-  sender: any = sessionStorage.getItem('sender')
+  sender: any = localStorage.getItem('sender')
   senderId = JSON.parse(this.sender).publicKey
   transactionDetails: any = []
   RIPPLE_EPOCH_DIFF = 0x386d4380;

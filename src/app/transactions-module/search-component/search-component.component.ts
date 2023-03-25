@@ -33,7 +33,7 @@ export class SearchComponentComponent {
   }
   
   onPayment(user:any){
-    sessionStorage.setItem("reciever",JSON.stringify(user))
+    localStorage.setItem("reciever",JSON.stringify(user))
     this.router.navigateByUrl('/transaction/payment')
   }
 }

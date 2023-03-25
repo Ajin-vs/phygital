@@ -21,7 +21,7 @@ export class LoginComponent {
   }
   public login(){
     this.authService.login('admin','admin').subscribe(res=>{
-      sessionStorage.setItem('sender', JSON.stringify(this.sender))
+      localStorage.setItem('sender', JSON.stringify(this.sender))
       this.router.navigateByUrl('/home');
     })
    
