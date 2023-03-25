@@ -3,7 +3,7 @@ import { BiometryType, NativeBiometric } from 'capacitor-native-biometric';
 import { TransactionServiceService } from 'src/app/transactions-module/transaction-service.service';
 import { App } from '@capacitor/app';
 import { Observable } from 'rxjs';
-
+import * as xrpl from "xrpl";
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -17,6 +17,8 @@ export class HomeComponent {
   value3: any ="Online";
   sidebarVisible: boolean= false;
   checked: boolean = false;
+  bal:any =0
+
   constructor(private transationService : TransactionServiceService){
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
@@ -26,8 +28,12 @@ export class HomeComponent {
 
   }
   ngOnInit() {
+    // this.test().then(data=>{
+    //   console.log(data,"data");
+    //   this.bal = data;
+    // })
   console.log(localStorage.getItem("bio"),"bio");
-
+    
     if (!localStorage.getItem("bio")) {
       this.getBio().then(data => {
         localStorage.setItem('bio', 'true');
@@ -70,7 +76,6 @@ export class HomeComponent {
   }
 
 
-
   sidebarVisibility(){
     if(this.value3 === 'MicroFinance'){
       this.sidebarVisible = true;
@@ -79,6 +84,19 @@ export class HomeComponent {
       this.sidebarVisible  =false;
     }
   }
+
+//  async test(){
+//     const client = new xrpl.Client("wss://s.devnet.rippletest.net:51233")
+//     await client.connect()
+//      const faucetHost = ''
+//      const standby_wallet = xrpl.Wallet.fromSeed("sEdSqU1ifnZaS11TDYdF2RUdhABJfHv");
+//      const standby_balance = (await client.getXrpBalance(standby_wallet.address))
+
+//      console.log(standby_balance);
+     
+//     return(standby_balance)
+//     // res.status(200).send({ my_balance, my_wallet })
+//   }
 getBio(){
   let performBiometricVerificatin = new Promise<any>((resolve, reject) => {
 
