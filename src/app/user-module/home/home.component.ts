@@ -12,10 +12,13 @@ import * as xrpl from "xrpl";
 export class HomeComponent {
 
   balance:number=0
-  sender:any =sessionStorage.getItem('sender');
+  sender:any =localStorage.getItem('sender');
   justifyOptions: any[] =[];
   value3: any ="Online";
+  sidebarVisible: boolean= false;
+  checked: boolean = false;
   bal:any =0
+
   constructor(private transationService : TransactionServiceService){
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
@@ -70,6 +73,16 @@ export class HomeComponent {
     this.transationService.getBalance(JSON.parse(this.sender).pSeed).subscribe(data => {
       this.balance = data.standby_balance
     })
+  }
+
+
+  sidebarVisibility(){
+    if(this.value3 === 'MicroFinance'){
+      this.sidebarVisible = true;
+    }
+    else{
+      this.sidebarVisible  =false;
+    }
   }
 
 //  async test(){

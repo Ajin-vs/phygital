@@ -18,7 +18,7 @@ export class PaymentComponent {
   reciever:any;
   error:string =''
   transfered=false;
-  sender:any = sessionStorage.getItem('sender')
+  sender:any = localStorage.getItem('sender')
   audio:any;
   mobile:any
   // {mobile:9748636760,pSeed:'sEdSFvqSN51N6PmrY2Zdqy6uJ51FfFn'};
@@ -28,7 +28,7 @@ export class PaymentComponent {
   }
  ngOnInit(){
   this.mobile = this.route.snapshot.paramMap.get('mobile');
-  this.reciever = sessionStorage.getItem('reciever');
+  this.reciever = localStorage.getItem('reciever');
   if(this.mobile){
     this.transactionService.getUser(this.mobile).subscribe(data=>{
       this.reciever = JSON.stringify(data.user[0])      
