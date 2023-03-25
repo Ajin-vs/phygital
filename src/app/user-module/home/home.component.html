@@ -1,5 +1,16 @@
 <div class="bg p-3">
-    <i class="pi pi-user rounded rounded-5 shadow bg-success text-light p-3 mb-3" style="font-size: 1.5rem"></i>
+    <div class="" >
+        <p-sidebar [(visible)]="sidebarVisible">
+            <div class="d-flex justify-content-around mt-5">
+                <strong >Loan Agent</strong>
+                <p-inputSwitch [(ngModel)]="checked"></p-inputSwitch>
+            </div>
+           
+        </p-sidebar>
+    </div>
+  
+    <i class="pi pi-user rounded rounded-5 shadow bg-success text-light p-3 mb-3" style="font-size: 1.5rem" (click)="sidebarVisibility()">
+    </i>
     <strong class="ms-3 fs-2">Ajin</strong>
     <i class="pi pi-sign-out rounded rounded-5   text-dark p-3 mb-3 float-end" style="font-size: 1.5rem"></i>
     <div>

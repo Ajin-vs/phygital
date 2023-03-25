@@ -15,6 +15,8 @@ export class HomeComponent {
   sender:any =localStorage.getItem('sender');
   justifyOptions: any[] =[];
   value3: any ="Online";
+  sidebarVisible: boolean= false;
+  checked: boolean = false;
   constructor(private transationService : TransactionServiceService){
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
@@ -67,6 +69,16 @@ export class HomeComponent {
     })
   }
 
+
+
+  sidebarVisibility(){
+    if(this.value3 === 'MicroFinance'){
+      this.sidebarVisible = true;
+    }
+    else{
+      this.sidebarVisible  =false;
+    }
+  }
 getBio(){
   let performBiometricVerificatin = new Promise<any>((resolve, reject) => {
 
