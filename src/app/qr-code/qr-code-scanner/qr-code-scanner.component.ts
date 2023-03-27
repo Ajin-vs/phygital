@@ -21,9 +21,22 @@ export class QrCodeScannerComponent {
   }
   public scanSuccessHandler(event:string){
     this.scanResult = event
-    let mobile = this.scanResult.split('|')[1]
+    let reciver = {
+      mobile:this.scanResult.split('|')[1],
+      name:this.scanResult.split('|')[0],
+      publicKey:this.scanResult.split('|')[2]
+
+    }
+    localStorage.setItem('reciever',JSON.stringify(reciver))
+    // if(!localStorage.getItem('mode') || localStorage.getItem('mode') == 'Online'){
+    //   this.router.navigate(['/transaction/payment'])    
+    // }
+
+    // else if(localStorage.getItem('mode') && localStorage.getItem('mode')==='Offline'){
+    //   // let mobile = this.scanResult.split('|')
+    // }
+    this.router.navigate(['/transaction/payment'])    
     this.scannerEnabled = false;
-    this.router.navigate(['/transaction/payment',{mobile:mobile}])    
   }
 
   ngOnDestroy(){

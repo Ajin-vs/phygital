@@ -13,6 +13,7 @@ import { DemographicDetailsComponent } from './demographic-details/demographic-d
 import { HttpClientModule } from '@angular/common/http';
 import { BlockChainCrudComponent } from './block-chain/block-chain-crud/block-chain-crud.component';
 import { FormsModule } from '@angular/forms';
+import { BlockUIModule } from 'primeng/blockui';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,7 +31,8 @@ import { FormsModule } from '@angular/forms';
     DialogModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    BlockUIModule
   ],
   providers: [],
   bootstrap: [AppComponent]

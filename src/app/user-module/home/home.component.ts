@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component,DoCheck } from '@angular/core';
 import { BiometryType, NativeBiometric } from 'capacitor-native-biometric';
 import { TransactionServiceService } from 'src/app/transactions-module/transaction-service.service';
 import { App } from '@capacitor/app';
@@ -7,19 +7,21 @@ import * as xrpl from "xrpl";
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {
 
-  balance:number=0
-  sender:any =localStorage.getItem('sender');
-  justifyOptions: any[] =[];
-  value3: any ="Online";
-  sidebarVisible: boolean= false;
+  balance: number = 0
+  sender: any = localStorage.getItem('sender');
+  justifyOptions: any[] = [];
+  mode: any = "Online";
+  sidebarVisible: boolean = false;
+  visible = true;
   checked: boolean = false;
-  bal:any =0
 
-  constructor(private transationService : TransactionServiceService){
+  blockedPanel= false
+  constructor(private transationService: TransactionServiceService) {
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
       { label: 'OFF', value: 'Offline' },
@@ -28,12 +30,8 @@ export class HomeComponent {
 
   }
   ngOnInit() {
-    // this.test().then(data=>{
-    //   console.log(data,"data");
-    //   this.bal = data;
-    // })
-  console.log(localStorage.getItem("bio"),"bio");
-    
+
+
     if (!localStorage.getItem("bio")) {
       this.getBio().then(data => {
         localStorage.setItem('bio', 'true');
@@ -48,7 +46,10 @@ export class HomeComponent {
         }
       })
     }
-
+    if (localStorage.getItem('checked')) { 
+      this.checked = true; 
+    }
+    if (localStorage.getItem('mode')) this.mode = localStorage.getItem('mode');
     // if(!localStorage.getItem("bio")){
     //   this.performBiometricVerificatin.then((verified)=>{
     //     localStorage.setItem('bio','true')
@@ -75,15 +76,25 @@ export class HomeComponent {
     })
   }
 
+  
+  changeTog() {
+    if (this.checked) {
+      localStorage.setItem('checked', 'true')
 
-  sidebarVisibility(){
-    if(this.value3 === 'MicroFinance'){
-      this.sidebarVisible = true;
     }
-    else{
-      this.sidebarVisible  =false;
+    else {
+      localStorage.removeItem('checked');
     }
   }
+  changeMode(mode: string) {
+    this.mode = mode;
+    localStorage.setItem('mode', mode);
+    this.checked = false;
+    if((this.mode === "MicroFinance") && localStorage.getItem('checked')=='true'){
+      this.checked = true;
+    }
+  }
+
 
 //  async test(){
 //     const client = new xrpl.Client("wss://s.devnet.rippletest.net:51233")
@@ -97,43 +108,54 @@ export class HomeComponent {
 //     return(standby_balance)
 //     // res.status(200).send({ my_balance, my_wallet })
 //   }
-getBio(){
-  let performBiometricVerificatin = new Promise<any>((resolve, reject) => {
 
-    NativeBiometric.isAvailable().then(result => {
-      if (result) {
-        const isFaceID = result.biometryType == BiometryType.MULTIPLE;
 
-        NativeBiometric.verifyIdentity({
-          reason: "For easy log in",
-          title: "Log in",
-          subtitle: "Maybe add subtitle here?",
-          description: "Maybe a description too?",
-          useFallback: true,
-          maxAttempts:3
-          
-        }).then((res) => {
-          console.log(res, "res true");
-        
-          resolve(true);
-          // return true
-        })
-          .catch((err) => {
-            console.log(err, "errr");
-            reject(err)
-            // return false
-          });
-      }
-      else {
-        reject('no bio')
 
-      }
+  sidebarVisibility() {
+    if (this.mode === 'MicroFinance') {
+      this.sidebarVisible = true;
+    }
+    else {
+      this.sidebarVisible = false;
+    }
+  }
+  getBio() {
+    let performBiometricVerificatin = new Promise<any>((resolve, reject) => {
+
+      NativeBiometric.isAvailable().then(result => {
+        if (result) {
+          const isFaceID = result.biometryType == BiometryType.MULTIPLE;
+
+          NativeBiometric.verifyIdentity({
+            reason: "For easy log in",
+            title: "Log in",
+            subtitle: "Maybe add subtitle here?",
+            description: "Maybe a description too?",
+            useFallback: true,
+            maxAttempts: 3
+
+          }).then((res) => {
+            console.log(res, "res true");
+
+            resolve(true);
+            // return true
+          })
+            .catch((err) => {
+              console.log(err, "errr");
+              reject(err)
+              // return false
+            });
+        }
+        else {
+          reject('no bio')
+
+        }
+      })
+
     })
+    return performBiometricVerificatin
+  }
 
-  })
-  return performBiometricVerificatin
-}
- 
 
 
 
