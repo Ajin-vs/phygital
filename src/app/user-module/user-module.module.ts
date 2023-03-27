@@ -11,6 +11,11 @@ import {SelectButtonModule} from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
 import { SidebarModule } from 'primeng/sidebar';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { AccordionModule } from 'primeng/accordion';
+import { ScrollerModule } from 'primeng/scroller';
+import { BlockUIModule } from 'primeng/blockui';
+import { DialogModule } from 'primeng/dialog';
+
 @NgModule({
   declarations: [
     HomeComponent,
@@ -25,7 +30,11 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     SelectButtonModule,
     SidebarModule,
     InputSwitchModule,
-    FormsModule
+    AccordionModule,
+    ScrollerModule,
+    DialogModule,
+    FormsModule,
+    BlockUIModule
   ]
 })
 export class UserModuleModule { }

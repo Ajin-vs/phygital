@@ -11,7 +11,7 @@ export class QrCodeGeneratorComponent {
   constructor(private blockChainService : BlockChainService){}
 
   ngOnInit(){
-    this.myAngularxQrCode = 'Ajin|9633194654|12132323|Mscd12';
+    this.myAngularxQrCode = 'Ajin|9633194654|r4aa7XbH8PUyHGC9zHnXJ9vDBdpUd2Ak4G|Mscd12';
   }
  
 
