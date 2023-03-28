@@ -46,7 +46,7 @@ export class HomeComponent {
         }
       })
     }
-    if (localStorage.getItem('checked')) { 
+    if (localStorage.getItem('checked') && this.mode === 'MicroFinance') { 
       this.checked = true; 
     }
     if (localStorage.getItem('mode')) this.mode = localStorage.getItem('mode');
