@@ -20,7 +20,19 @@
     <i class="pi pi-user rounded rounded-5 shadow bg-success text-light p-3 mb-3" style="font-size: 1.5rem" (click)="sidebarVisibility()">
     </i>
     <strong class="ms-3 fs-2">Ajin</strong>
-    <i class="pi pi-sign-out rounded rounded-5   text-dark p-3 mb-3 float-end" style="font-size: 1.5rem"></i>
+    
+   <span class="float-end">
+    <i class="pi pi-bell " style="font-size: 1.5rem"  (click)="op.toggle($event)" pBadge value="2"></i>
+
+    <i class="pi pi-sign-out rounded rounded-5   text-dark p-3 mb-3 " style="font-size: 1.5rem"></i>
+   </span>
+
+    <p-overlayPanel #op>
+        <!-- <img src="https://primefaces.org/cdn/primeng/images/demo/product/bamboo-watch.jpg" alt="product" /> -->
+        <p>message1</p>
+        <hr>
+        <p>message2</p>
+    </p-overlayPanel>
     <div>
         <h4 class="text-center text-light"> <strong>{{mode}} Mode</strong></h4>
     </div>
@@ -170,7 +182,7 @@
         </div>
     </div>
 
-<h1>{{connectionStatus}} </h1>
+<!-- <h1>{{connectionStatus}} </h1> -->
     <div class="p-3 " *ngIf="mode == 'Online'">
         <h4 class="pb-2">People</h4>
         <div class="d-flex justify-content-around text-center text-white mb-5">

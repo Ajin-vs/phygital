@@ -24,6 +24,7 @@
     "@capacitor/cli": "^4.7.0",
     "@capacitor/core": "^4.7.0",
     "@capacitor/ios": "^4.7.0",
+    "@capacitor/network": "^4.1.0",
     "@capacitor/toast": "^4.1.0",
     "@ng-bootstrap/ng-bootstrap": "^14.0.1",
     "@popperjs/core": "^2.11.6",
