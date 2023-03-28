@@ -1,17 +1,22 @@
-import { ChangeDetectionStrategy, Component,DoCheck } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { BiometryType, NativeBiometric } from 'capacitor-native-biometric';
 import { TransactionServiceService } from 'src/app/transactions-module/transaction-service.service';
 import { App } from '@capacitor/app';
-import { Observable } from 'rxjs';
+import { fromEvent, Observable, of, Subscription } from 'rxjs';
 import * as xrpl from "xrpl";
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
-
+export class HomeComponent implements OnDestroy{
+  // internet connection variables
+  public onlineEvent!: Observable<Event>;
+  public offlineEvent!: Observable<Event>;
+  public subscriptions: Subscription[] = [];
+  public connectionStatusMessage: string ='';
+  public connectionStatus: boolean =false;
+  // 
   balance: number = 0
   sender: any = localStorage.getItem('sender');
   justifyOptions: any[] = [];
@@ -20,7 +25,7 @@ export class HomeComponent {
   visible = true;
   checked: boolean = false;
 
-  blockedPanel= false
+  blockedPanel = false
   constructor(private transationService: TransactionServiceService) {
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
@@ -30,7 +35,24 @@ export class HomeComponent {
 
   }
   ngOnInit() {
+// network implimentation
+this.connectionStatus = window.navigator.onLine;
+this.onlineEvent = fromEvent(window, 'online');
+this.offlineEvent = fromEvent(window, 'offline');
 
+this.subscriptions.push(this.onlineEvent.subscribe(event => {
+  // this.connectionStatusMessage = 'Connected to internet! You are online';
+  this.connectionStatus = true;
+  // console.log("online");
+  
+}));
+
+this.subscriptions.push(this.offlineEvent.subscribe(e => {
+  this.connectionStatusMessage = 'Connection lost! You are offline';
+  this.connectionStatus = false;
+ 
+  
+}));
 
     if (!localStorage.getItem("bio")) {
       this.getBio().then(data => {
@@ -46,8 +68,8 @@ export class HomeComponent {
         }
       })
     }
-    if (localStorage.getItem('checked') && this.mode === 'MicroFinance') { 
-      this.checked = true; 
+    if (localStorage.getItem('checked') && this.mode === 'MicroFinance') {
+      this.checked = true;
     }
     if (localStorage.getItem('mode')) this.mode = localStorage.getItem('mode');
     // if(!localStorage.getItem("bio")){
@@ -72,11 +94,12 @@ export class HomeComponent {
 
     // }
     this.transationService.getBalance(JSON.parse(this.sender).pSeed).subscribe(data => {
-      this.balance = data.standby_balance
+      this.balance = Math.trunc(data.standby_balance);
+      localStorage.setItem('balance', JSON.stringify(this.balance))
     })
   }
 
-  
+
   changeTog() {
     if (this.checked) {
       localStorage.setItem('checked', 'true')
@@ -90,24 +113,24 @@ export class HomeComponent {
     this.mode = mode;
     localStorage.setItem('mode', mode);
     this.checked = false;
-    if((this.mode === "MicroFinance") && localStorage.getItem('checked')=='true'){
+    if ((this.mode === "MicroFinance") && localStorage.getItem('checked') == 'true') {
       this.checked = true;
     }
   }
 
 
-//  async test(){
-//     const client = new xrpl.Client("wss://s.devnet.rippletest.net:51233")
-//     await client.connect()
-//      const faucetHost = ''
-//      const standby_wallet = xrpl.Wallet.fromSeed("sEdSqU1ifnZaS11TDYdF2RUdhABJfHv");
-//      const standby_balance = (await client.getXrpBalance(standby_wallet.address))
+  //  async test(){
+  //     const client = new xrpl.Client("wss://s.devnet.rippletest.net:51233")
+  //     await client.connect()
+  //      const faucetHost = ''
+  //      const standby_wallet = xrpl.Wallet.fromSeed("sEdSqU1ifnZaS11TDYdF2RUdhABJfHv");
+  //      const standby_balance = (await client.getXrpBalance(standby_wallet.address))
 
-//      console.log(standby_balance);
-     
-//     return(standby_balance)
-//     // res.status(200).send({ my_balance, my_wallet })
-//   }
+  //      console.log(standby_balance);
+
+  //     return(standby_balance)
+  //     // res.status(200).send({ my_balance, my_wallet })
+  //   }
 
 
 
@@ -156,7 +179,9 @@ export class HomeComponent {
     return performBiometricVerificatin
   }
 
-
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+}
 
 
 
