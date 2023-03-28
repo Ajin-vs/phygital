@@ -15,7 +15,8 @@ import { AccordionModule } from 'primeng/accordion';
 import { ScrollerModule } from 'primeng/scroller';
 import { BlockUIModule } from 'primeng/blockui';
 import { DialogModule } from 'primeng/dialog';
-
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { BadgeModule } from 'primeng/badge';
 @NgModule({
   declarations: [
     HomeComponent,
@@ -33,8 +34,10 @@ import { DialogModule } from 'primeng/dialog';
     AccordionModule,
     ScrollerModule,
     DialogModule,
+    OverlayPanelModule,
     FormsModule,
-    BlockUIModule
+    BlockUIModule,
+    BadgeModule
   ]
 })
 export class UserModuleModule { }

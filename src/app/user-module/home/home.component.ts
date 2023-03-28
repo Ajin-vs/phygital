@@ -2,22 +2,17 @@ import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { BiometryType, NativeBiometric } from 'capacitor-native-biometric';
 import { TransactionServiceService } from 'src/app/transactions-module/transaction-service.service';
 import { App } from '@capacitor/app';
-import { fromEvent, Observable, of, Subscription } from 'rxjs';
+import { Network } from '@capacitor/network';
 import * as xrpl from "xrpl";
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnDestroy{
-  // internet connection variables
-  public onlineEvent!: Observable<Event>;
-  public offlineEvent!: Observable<Event>;
-  public subscriptions: Subscription[] = [];
-  public connectionStatusMessage: string ='';
-  public connectionStatus: boolean =false;
+export class HomeComponent {
+  public connectionStatus: boolean = false;
   // 
-  balance: number = 0
+  balance: any = 0
   sender: any = localStorage.getItem('sender');
   justifyOptions: any[] = [];
   mode: any = "Online";
@@ -35,24 +30,26 @@ export class HomeComponent implements OnDestroy{
 
   }
   ngOnInit() {
-// network implimentation
-this.connectionStatus = window.navigator.onLine;
-this.onlineEvent = fromEvent(window, 'online');
-this.offlineEvent = fromEvent(window, 'offline');
 
-this.subscriptions.push(this.onlineEvent.subscribe(event => {
-  // this.connectionStatusMessage = 'Connected to internet! You are online';
-  this.connectionStatus = true;
-  // console.log("online");
-  
-}));
+    //  network using capacitor
+    Network.getStatus().then(status => {
+      this.connectionStatus = status.connected
+      if(!this.connectionStatus){
+        this.balance =localStorage.getItem('balance');
+      }else{
+        this.getBalance();
+      }
+    });
 
-this.subscriptions.push(this.offlineEvent.subscribe(e => {
-  this.connectionStatusMessage = 'Connection lost! You are offline';
-  this.connectionStatus = false;
- 
-  
-}));
+    Network.addListener('networkStatusChange', status => {
+      this.connectionStatus = status.connected;
+      if(this.connectionStatus){
+        this.getBalance();
+      }
+      else{
+        this.balance =localStorage.getItem('balance');
+      }
+    });
 
     if (!localStorage.getItem("bio")) {
       this.getBio().then(data => {
@@ -78,12 +75,12 @@ this.subscriptions.push(this.offlineEvent.subscribe(e => {
     //     console.log(verified,"verified");
     //   }).catch((err)=>{
     //     console.log("internal err",err);
-
+  
     //     if(err.includes( 'Verification error')){
     //       this.performBiometricVerificatin.then((verified)=>{
     //         localStorage.setItem('bio','true')
     //       }).catch(err=>{
-
+  
     //         if(err.includes('Verification error')){
     //           App.exitApp();
     //         }
@@ -93,12 +90,19 @@ this.subscriptions.push(this.offlineEvent.subscribe(e => {
     //   })
 
     // }
-    this.transationService.getBalance(JSON.parse(this.sender).pSeed).subscribe(data => {
-      this.balance = Math.trunc(data.standby_balance);
-      localStorage.setItem('balance', JSON.stringify(this.balance))
-    })
+    // this.getBalance();
   }
 
+  getBalance(){
+    this.transationService.getBalance(JSON.parse(this.sender).pSeed).subscribe(data => {
+      this.balance = Math.trunc(data.standby_balance);
+      if(localStorage.getItem('balance')){
+
+      }else{
+        localStorage.setItem('balance', JSON.stringify(this.balance))
+      }
+    })
+  }
 
   changeTog() {
     if (this.checked) {
@@ -178,12 +182,5 @@ this.subscriptions.push(this.offlineEvent.subscribe(e => {
     })
     return performBiometricVerificatin
   }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
-}
-
-
-
 
 }
