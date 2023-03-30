@@ -30,13 +30,41 @@ export class TransactionHistoryComponent {
       this.transactionService.getOfflineTransactionHs.subscribe((data:any)=>{
         data.map((tx:any)=>{
           let name = JSON.stringify(tx.name).split("|");
-          let tr ={
-            date:name[0],
-            mobile:name[1],
-            amount:name[2],
-            type: name[3].includes('debit')? 'debit':'credit'
+          // console.log(name[],"d");
+          if(name[5] === undefined){
+            let tr ={
+              date:name[0],
+              mobile:name[1]==JSON.parse(this.sender).mobile? name[4]:name[1],
+              amount:name[2],
+              type: name[3].includes('debit')? 'debit':'credit'
+            }
+            this.offlineTransaction.push(tr);
           }
-          this.offlineTransaction.push(tr);
+        
+          // console.log(name);
+          
+        })
+        // console.log(this.offlineTransaction);
+        
+      });
+      // console.log("offlines",this.transactionService.getOfflineTransactionHs());
+      
+    }
+    else if(this.mode === 'MicroFinance'){
+      this.transactionService.getOfflineTransactionHs.subscribe((data:any)=>{
+        data.map((tx:any)=>{
+          let name = JSON.stringify(tx.name).split("|");
+          // console.log(name[],"d");
+          if(name[5] !== undefined){
+            let tr ={
+              date:name[0],
+              mobile:name[1]==JSON.parse(this.sender).mobile? name[4]:name[1],
+              amount:name[2],
+              type: name[3].includes('debit')? 'debit':'credit'
+            }
+            this.offlineTransaction.push(tr);
+          }
+        
           // console.log(name);
           
         })

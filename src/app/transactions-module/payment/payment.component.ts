@@ -104,19 +104,17 @@ export class PaymentComponent {
             // }).then(prepared => {
               // console.log(prepared,"prepared");
               const signed:any = this.generateSignedTransaction(JSON.parse(this.sender).pSeed)
-              console.log("tx_blob is:", signed.tx_blob)
-              console.log("tx hash is:", signed.hash)
               // const  = standby_wallet.sign(prepared);
               let crtDate = new Date();
              
               Filesystem.writeFile({
-                path: `outbound/${crtDate}|${JSON.stringify(JSON.parse(this.reciever).mobile)}|${this.amount}|'debit'.txt`,
-                data: `${signed.tx_blob}|${JSON.stringify(JSON.parse(this.reciever).mobile)}|${this.amount}`,
+                path: `outbound/${crtDate}|${JSON.stringify(JSON.parse(this.reciever).mobile)}|${this.amount}|'debit'|${JSON.parse(this.sender).mobile}.txt`,
+                data: `${signed.tx_blob}|${JSON.stringify(JSON.parse(this.reciever).mobile)}|${this.amount}|${JSON.parse(this.sender).mobile}`,
                 directory: Directory.Data,
                 encoding: Encoding.UTF8
               }).then(data => {
                 console.log(data);
-                localStorage.setItem('transaction', `${signed.tx_blob}|${JSON.stringify(JSON.parse(this.reciever).mobile)}|${this.amount}`);
+                localStorage.setItem('transaction', `${signed.tx_blob}|${JSON.stringify(JSON.parse(this.reciever).mobile)}|${this.amount}|${JSON.parse(this.sender).mobile}`);
                 // writeFile(`../../../outbound/${crtDate}.json`, 'Hello content!',()=>{})
                 this.transfered = false;
                 //need to implement balance reduction from localstorage

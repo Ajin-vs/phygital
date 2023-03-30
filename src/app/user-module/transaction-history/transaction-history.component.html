@@ -9,14 +9,14 @@
             <span class="p-3 rounded rounded-5 icon-bg">Av</span>
         </div>
         <div class=" mt-5 text-start col-6">
-            <strong >{{a.mobile | slice:2:9}}</strong>
+            <strong >{{a.mobile | slice:0:12}}</strong>
            
             <p>{{a.date | slice:1:25 }}</p>
         </div>
         <div class=" mt-5 col-4">
-            <p *ngIf="a.type == 'debit'" class="text-success text-left">
+            <p *ngIf="a.type == 'credit'" class="text-success text-left">
                 +{{a.amount}}</p>
-            <p  *ngIf="a.type == 'credit'" class="text-danger text-left">
+            <p  *ngIf="a.type == 'debit'" class="text-danger text-left">
                 -{{a.amount}}</p>
         </div>
     </div>

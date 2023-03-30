@@ -15,6 +15,7 @@ export class QrCodeScannerComponent {
   sub: any = ''
   page: any = ''
   audio = new Audio("../../../assets/audio/success-1-6297.mp3");
+  
   constructor(private router: Router, private route: ActivatedRoute, private messageService: MessageService) {
 
   }
@@ -48,15 +49,17 @@ export class QrCodeScannerComponent {
       this.scannerEnabled = false;
     }
     else if (localStorage.getItem('mode') === 'Offline' && this.sub === 'txReciver') {
+      let sender:any = localStorage.getItem('sender');
       let crtDate = new Date();
       let recive = event.split('|');
+      let path =''
       // console.log("here");
       
       // console.log(event);
-      
+     
       // console.log(`outbound/${crtDate}|${JSON.stringify(JSON.parse(recive[1]))}|${recive[2]}|'credit'.txt`,);
       Filesystem.writeFile({
-        path: `outbound/${crtDate}|${JSON.stringify(JSON.parse(recive[1]))}|${recive[2]}|'credit'.txt`,
+        path: `outbound/${crtDate}|${JSON.stringify(JSON.parse(recive[1]))}|${recive[2]}|'credit'|${recive[3]}.txt`,
         data: event,
         directory: Directory.Data,
         encoding: Encoding.UTF8
@@ -68,7 +71,28 @@ export class QrCodeScannerComponent {
         this.router.navigate(['/home'])
       })
     }
-
+    else if(localStorage.getItem('mode') == 'MicroFinance'){
+      let crtDate = new Date();
+      let recive = event.split('|');
+      let path =''
+      // console.log("here");
+      
+      // console.log(event);
+     
+      // console.log(`outbound/${crtDate}|${JSON.stringify(JSON.parse(recive[1]))}|${recive[2]}|'credit'.txt`,);
+      Filesystem.writeFile({
+        path: `outbound/${crtDate}|${JSON.stringify(JSON.parse(recive[1]))}|${recive[2]}|'credit'|${recive[3]}|'finance'.txt`,
+        data: event,
+        directory: Directory.Data,
+        encoding: Encoding.UTF8
+      }).then(res=>{
+        // let latestBalance =Number(localStorage.getItem('balance')) + Number(recive[2])
+        // localStorage.setItem('balance',JSON.stringify(latestBalance) );
+        this.audio.play();
+        this.messageService.add({ severity: 'success', detail: 'Transaction Completed' });
+        this.router.navigate(['/home'])
+      })
+    }
   }
 
   ngOnDestroy() {

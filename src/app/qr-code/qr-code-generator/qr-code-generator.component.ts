@@ -17,7 +17,7 @@ export class QrCodeGeneratorComponent {
   }
 
   ngOnInit(){
-    if(localStorage.getItem('mode') === 'Offline' &&  localStorage.getItem('transaction')){
+    if((localStorage.getItem('mode') === 'Offline' || localStorage.getItem('mode') === 'MicroFinance') &&  localStorage.getItem('transaction')){
       this.myAngularxQrCode = localStorage.getItem('transaction');      
     }
     else{

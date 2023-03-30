@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 export class HomeComponent {
   public connectionStatus: boolean = false;
   // 
+  
   balance: any = 0
   sender: any = localStorage.getItem('sender');
   justifyOptions: any[] = [];
@@ -25,6 +26,7 @@ export class HomeComponent {
   checked: boolean = false;
   blockedPanel = false;
   spinner = false;
+  reciever ={mobile:9654331234}
   audio = new Audio("../../../assets/audio/success-1-6297.mp3");
   alertAudio = new Audio("../../../assets/audio/error-call-to-attention-129258.mp3")
   constructor(private transationService: TransactionServiceService, private messageService: MessageService, private router: Router) {
@@ -38,7 +40,9 @@ export class HomeComponent {
 
   ngOnInit() {
     this.generateDirectory();
-
+    if ((localStorage.getItem('mode') === "MicroFinance") && localStorage.getItem('checked') == 'true') {
+      this.checked = true;
+    }
     if (!localStorage.getItem("bio")) {
       this.getBio().then(data => {
         localStorage.setItem('bio', 'true');
@@ -110,9 +114,7 @@ export class HomeComponent {
     });
 
 
-    if (localStorage.getItem('checked') && this.mode === 'MicroFinance') {
-      this.checked = true;
-    }
+   
     if (localStorage.getItem('mode')) this.mode = localStorage.getItem('mode');
     // if(!localStorage.getItem("bio")){
     //   this.performBiometricVerificatin.then((verified)=>{
@@ -138,6 +140,44 @@ export class HomeComponent {
     // this.getBalance();
   }
   payLender(){
+    let tx =this.generateSignedTransaction(JSON.parse(this.sender).pSeed);
+    let seq = Number(localStorage.getItem('sequence')) +1
+    // const client = new xrpl.Client(this.net)
+    // client.connect().then(conn => {
+      const standby_wallet = xrpl.Wallet.fromSeed(JSON.parse(this.sender).pSeed);  
+      console.log(standby_wallet,"wallet");
+      
+      // const operational_wallet = xrpl.Wallet.fromSeed(req.body.operationalSeedField)
+      // const sendAmount = req.body.standbyAmountField
+      // client.autofill({
+      //   "TransactionType": "Payment",
+      //   "Account": standby_wallet.address,
+      //   "Amount": xrpl.xrpToDrops(this.amount),
+      //   "Destination": JSON.parse(this.reciever).publicKey,
+      //   "Sequence":seq,
+      //   "LastLedgerSequence":99999999
+      // }).then(prepared => {
+        // console.log(prepared,"prepared");
+        const signed:any = this.generateSignedTransaction(JSON.parse(this.sender).pSeed)
+        // const  = standby_wallet.sign(prepared);
+        let crtDate = new Date();
+       
+        Filesystem.writeFile({
+          path: `outbound/${crtDate}|${JSON.stringify(this.reciever.mobile)}|'100'|'debit'|${JSON.stringify(JSON.parse(this.sender).mobile)}|'finace'.txt`,
+          data: `${signed.tx_blob}|${JSON.stringify(this.reciever.mobile)}|'100'|'debit'|${JSON.stringify(JSON.parse(this.sender).mobile)}`,
+          directory: Directory.Data,
+          encoding: Encoding.UTF8
+        }).then(data => {
+          localStorage.setItem('transaction', `${signed.tx_blob}|${JSON.stringify(this.reciever.mobile)}|'100'|'debit'|${JSON.stringify(JSON.parse(this.sender).mobile)}`);
+          // writeFile(`../../../outbound/${crtDate}.json`, 'Hello content!',()=>{})
+          //need to implement balance reduction from localstorage
+          localStorage.setItem('sequence',JSON.stringify(seq));
+          let latestBalance =Number(localStorage.getItem('balance')) - 100
+          localStorage.setItem('balance',JSON.stringify(latestBalance) )
+          this.router.navigateByUrl('/qrCode')
+        })
+
+
     
   }
   onlineSend(btn: string) {
@@ -287,8 +327,6 @@ export class HomeComponent {
   }
 
   syncOfflineTx() {
-    // let inBound =  await this.getInbound();
-    // console.log(inBound,"here");
     
     Filesystem.readdir({
       path: '/outbound',
@@ -356,5 +394,40 @@ export class HomeComponent {
     return inBoundFiles;
   }
 
+  generateSignedTransaction(pSeed:any){
+    
 
+    // Sample code demonstrating secure offline signing using xrpl.js library.
+    const xrpl = require('xrpl')
+    
+    // Load seed value from an environment variable:
+    const standby_wallet = xrpl.Wallet.fromSeed(pSeed)
+    
+    // For offline signing, you need to know your address's next Sequence number.
+    // Alternatively, you could use a Ticket in place of the Sequence number.
+    // This is useful when you need multiple signatures and may want to process transactions out-of-order.
+    // For details, see: https://xrpl.org/tickets.html
+    // let my_seq = 21404872
+    
+    // Provide *all* required fields before signing a transaction
+    
+    let seq = Number(localStorage.getItem('sequence')) +1
+    const txJSON = {
+      "Account": standby_wallet.address,
+      "TransactionType":"Payment",
+      "Destination":'rhMP1Pi7oMUrqBwosQbKFdrh8KVAkjiMPa',
+      "Amount":xrpl.xrpToDrops(100),
+      "Fee":"12",
+      "Flags":0,
+      "Sequence": seq,
+      "LastLedgerSequence":99999999, // Optional, but recommended.
+    }    
+    const signed = standby_wallet.sign(txJSON)
+    return signed
+    
+    
+    
+    
+    
+      }
 }
