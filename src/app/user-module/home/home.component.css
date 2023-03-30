@@ -5,6 +5,9 @@
 .filter-bg{
      filter: blur(8px);
 }
+.crs{
+    cursor: pointer;
+}
 img {
     /* filter: blur(4px); */
     width:100%;

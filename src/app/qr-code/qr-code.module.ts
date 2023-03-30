@@ -6,6 +6,8 @@ import { QrCodeGeneratorComponent } from './qr-code-generator/qr-code-generator.
 import { QRCodeModule } from 'angularx-qrcode';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { QrCodeScannerComponent } from './qr-code-scanner/qr-code-scanner.component';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 
 @NgModule({
@@ -18,6 +20,9 @@ import { QrCodeScannerComponent } from './qr-code-scanner/qr-code-scanner.compon
     QrCodeRoutingModule,
     ZXingScannerModule,
     QRCodeModule,
-  ]
+    ToastModule
+  ],
+  providers: [MessageService]
+
 })
 export class QrCodeModule { }

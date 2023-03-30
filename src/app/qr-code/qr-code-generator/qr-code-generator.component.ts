@@ -1,18 +1,32 @@
 import { Component } from '@angular/core';
 import { BlockChainService } from '../block-chain.service';
-
+import { App } from '@capacitor/app';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-qr-code-generator',
   templateUrl: './qr-code-generator.component.html',
   styleUrls: ['./qr-code-generator.component.css']
 })
 export class QrCodeGeneratorComponent {
-  public myAngularxQrCode: string ='';
-  constructor(private blockChainService : BlockChainService){}
+  public myAngularxQrCode: any ='';
+  constructor(private blockChainService : BlockChainService, private router: Router){
+    App.addListener('backButton', () => {
+      this.router.navigateByUrl('/home');
+    });
+    
+  }
 
   ngOnInit(){
-    this.myAngularxQrCode = 'Ajin|9633194654|r4aa7XbH8PUyHGC9zHnXJ9vDBdpUd2Ak4G|Mscd12';
+    if(localStorage.getItem('mode') === 'Offline' &&  localStorage.getItem('transaction')){
+      this.myAngularxQrCode = localStorage.getItem('transaction');      
+    }
+    else{
+      let sender:any = localStorage.getItem('sender');
+      this.myAngularxQrCode = `|${JSON.parse(sender).mobile}|${JSON.parse(sender).publicKey}|Mscd12`;
+    }
   }
- 
-
+  
+  ngOnDestroy(){
+    localStorage.removeItem('transaction'); 
+  }
 }

@@ -12,8 +12,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DemographicDetailsComponent } from './demographic-details/demographic-details.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BlockChainCrudComponent } from './block-chain/block-chain-crud/block-chain-crud.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BlockUIModule } from 'primeng/blockui';
+import { ToastModule } from 'primeng/toast';
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,7 +33,9 @@ import { BlockUIModule } from 'primeng/blockui';
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    BlockUIModule
+    ReactiveFormsModule,
+    BlockUIModule,
+    ToastModule
   ],
   providers: [],
   bootstrap: [AppComponent]

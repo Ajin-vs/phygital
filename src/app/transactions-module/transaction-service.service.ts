@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
 @Injectable({
   providedIn: 'root'
@@ -38,4 +39,19 @@ export class TransactionServiceService {
   public cancelEscrow(pSeed:any, escrow:any):Observable<any>{
     return this.httpClient.post(this.domain+'/cancelEscrow',{escrow,pSeed})
   }
+
+  public getAccountInfo(pKey:any):Observable<any>{
+    return this.httpClient.post(this.domain + '/getAccountInfo',{pKey})
+  }
+
+  public submitOfflineTx(signed:any):Observable<any>{
+    return this.httpClient.post(this.domain +'/submitOfflineXrp',{signed:signed})
+  }
+
+  getOfflineTransactionHs= new Observable((observer)=>{
+    Filesystem.readdir({path:'outbound',directory:Directory.Data}).then(res=>{
+      observer.next(res.files);
+    })
+  })
+  
 }

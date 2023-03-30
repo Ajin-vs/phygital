@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-qr-code-scanner',
@@ -7,39 +10,68 @@ import { Router } from '@angular/router';
   styleUrls: ['./qr-code-scanner.component.css']
 })
 export class QrCodeScannerComponent {
-  public scanResult=''
-  scannerEnabled:boolean=false;
-  constructor(private router : Router){
+  public scanResult = ''
+  scannerEnabled: boolean = false;
+  sub: any = ''
+  page: any = ''
+  audio = new Audio("../../../assets/audio/success-1-6297.mp3");
+  constructor(private router: Router, private route: ActivatedRoute, private messageService: MessageService) {
 
   }
-  ngOnInit(){
+  ngOnInit() {
     this.scannerEnabled = true;
+    this.sub = this.route.snapshot.paramMap.get('recieve');
+    console.log(this.sub);
 
   }
-  scanCompleteHandler(event:any){
-    
-  }
-  public scanSuccessHandler(event:string){
-    this.scanResult = event
-    let reciver = {
-      mobile:this.scanResult.split('|')[1],
-      name:this.scanResult.split('|')[0],
-      publicKey:this.scanResult.split('|')[2]
+  scanCompleteHandler(event: any) {
 
+  }
+  public scanSuccessHandler(event: string) {
+    if ((!localStorage.getItem('mode') || localStorage.getItem('mode') === 'Online' || localStorage.getItem('mode') === 'Offline') && (this.sub !== 'txReciver')) {
+      this.scanResult = event
+      let reciver = {
+        mobile: this.scanResult.split('|')[1],
+        name: this.scanResult.split('|')[0],
+        publicKey: this.scanResult.split('|')[2]
+
+      }
+      localStorage.setItem('reciever', JSON.stringify(reciver))
+      // if(!localStorage.getItem('mode') || localStorage.getItem('mode') == 'Online'){
+      //   this.router.navigate(['/transaction/payment'])    
+      // }
+
+      // else if(localStorage.getItem('mode') && localStorage.getItem('mode')==='Offline'){
+      //   // let mobile = this.scanResult.split('|')
+      // }
+      this.router.navigate(['/transaction/payment'])
+      this.scannerEnabled = false;
     }
-    localStorage.setItem('reciever',JSON.stringify(reciver))
-    // if(!localStorage.getItem('mode') || localStorage.getItem('mode') == 'Online'){
-    //   this.router.navigate(['/transaction/payment'])    
-    // }
+    else if (localStorage.getItem('mode') === 'Offline' && this.sub === 'txReciver') {
+      let crtDate = new Date();
+      let recive = event.split('|');
+      // console.log("here");
+      
+      // console.log(event);
+      
+      // console.log(`outbound/${crtDate}|${JSON.stringify(JSON.parse(recive[1]))}|${recive[2]}|'credit'.txt`,);
+      Filesystem.writeFile({
+        path: `outbound/${crtDate}|${JSON.stringify(JSON.parse(recive[1]))}|${recive[2]}|'credit'.txt`,
+        data: event,
+        directory: Directory.Data,
+        encoding: Encoding.UTF8
+      }).then(res=>{
+        let latestBalance =Number(localStorage.getItem('balance')) + Number(recive[2])
+        localStorage.setItem('balance',JSON.stringify(latestBalance) );
+        this.audio.play();
+        this.messageService.add({ severity: 'success', detail: 'Transaction Completed' });
+        this.router.navigate(['/home'])
+      })
+    }
 
-    // else if(localStorage.getItem('mode') && localStorage.getItem('mode')==='Offline'){
-    //   // let mobile = this.scanResult.split('|')
-    // }
-    this.router.navigate(['/transaction/payment'])    
-    this.scannerEnabled = false;
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.scannerEnabled = false
   }
 }

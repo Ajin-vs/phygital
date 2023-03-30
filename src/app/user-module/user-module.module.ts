@@ -17,6 +17,10 @@ import { BlockUIModule } from 'primeng/blockui';
 import { DialogModule } from 'primeng/dialog';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { BadgeModule } from 'primeng/badge';
+import { OverlayModule } from 'primeng/overlay';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+
 @NgModule({
   declarations: [
     HomeComponent,
@@ -37,7 +41,10 @@ import { BadgeModule } from 'primeng/badge';
     OverlayPanelModule,
     FormsModule,
     BlockUIModule,
+    OverlayModule,
+    ToastModule,
     BadgeModule
-  ]
+  ],
+  providers: [MessageService]
 })
 export class UserModuleModule { }

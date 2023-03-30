@@ -4,6 +4,10 @@ import { TransactionServiceService } from 'src/app/transactions-module/transacti
 import { App } from '@capacitor/app';
 import { Network } from '@capacitor/network';
 import * as xrpl from "xrpl";
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -19,9 +23,11 @@ export class HomeComponent {
   sidebarVisible: boolean = false;
   visible = true;
   checked: boolean = false;
-
-  blockedPanel = false
-  constructor(private transationService: TransactionServiceService) {
+  blockedPanel = false;
+  spinner = false;
+  audio = new Audio("../../../assets/audio/success-1-6297.mp3");
+  alertAudio = new Audio("../../../assets/audio/error-call-to-attention-129258.mp3")
+  constructor(private transationService: TransactionServiceService, private messageService: MessageService, private router: Router) {
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
       { label: 'OFF', value: 'Offline' },
@@ -29,27 +35,9 @@ export class HomeComponent {
     ];
 
   }
+
   ngOnInit() {
-
-    //  network using capacitor
-    Network.getStatus().then(status => {
-      this.connectionStatus = status.connected
-      if(!this.connectionStatus){
-        this.balance =localStorage.getItem('balance');
-      }else{
-        this.getBalance();
-      }
-    });
-
-    Network.addListener('networkStatusChange', status => {
-      this.connectionStatus = status.connected;
-      if(this.connectionStatus){
-        this.getBalance();
-      }
-      else{
-        this.balance =localStorage.getItem('balance');
-      }
-    });
+    this.generateDirectory();
 
     if (!localStorage.getItem("bio")) {
       this.getBio().then(data => {
@@ -65,6 +53,63 @@ export class HomeComponent {
         }
       })
     }
+    // need to add inbound condition check
+
+
+    //  network using capacitor
+    Network.getStatus().then(status => {
+      this.connectionStatus = status.connected
+      if (!this.connectionStatus) {
+        this.balance = localStorage.getItem('balance');
+      } else {
+        Filesystem.readdir({
+          path: '/outbound',
+          directory: Directory.Data
+        }).then(data => {
+          if (!(data.files.length > 0)) {
+            this.getBalance();
+            this.getAccountInfo();
+          }
+          else {
+            this.balance = localStorage.getItem('balance');
+          }
+        }).catch(err => {
+          // console.log("here",err);
+
+          this.getBalance();
+          this.getAccountInfo();
+        })
+      }
+    });
+
+    Network.addListener('networkStatusChange', status => {
+      this.connectionStatus = status.connected;
+      if (this.connectionStatus) {
+        Filesystem.readdir({
+          path: '/outbound',
+          directory: Directory.Data
+        }).then(data => {
+          if (!(data.files.length > 0)) {
+            this.getBalance();
+            this.getAccountInfo();
+          }
+          else {
+            this.balance = localStorage.getItem('balance');
+          }
+        }).catch(err => {
+          // console.log("here",err);
+
+          this.getBalance();
+          this.getAccountInfo();
+        })
+        // this.getBalance();
+      }
+      else {
+        this.balance = localStorage.getItem('balance');
+      }
+    });
+
+
     if (localStorage.getItem('checked') && this.mode === 'MicroFinance') {
       this.checked = true;
     }
@@ -75,12 +120,12 @@ export class HomeComponent {
     //     console.log(verified,"verified");
     //   }).catch((err)=>{
     //     console.log("internal err",err);
-  
+
     //     if(err.includes( 'Verification error')){
     //       this.performBiometricVerificatin.then((verified)=>{
     //         localStorage.setItem('bio','true')
     //       }).catch(err=>{
-  
+
     //         if(err.includes('Verification error')){
     //           App.exitApp();
     //         }
@@ -92,15 +137,66 @@ export class HomeComponent {
     // }
     // this.getBalance();
   }
+  payLender(){
+    
+  }
+  onlineSend(btn: string) {
+    if (!this.connectionStatus) {
+      this.messageService.add({ severity: 'error', detail: 'No internet connection.' });
+      this.alertAudio.play();
+    }
+    else if (this.connectionStatus) {
+      Filesystem.readdir({
+        path: '/outbound',
+        directory: Directory.Data
+      }).then(data => {
+        if (data.files.length > 0) {
+          this.messageService.add({ severity: 'error', detail: 'Zync all offline transaction before doing Online.' });
+          this.alertAudio.play();
+        }
+        else {
+          if (btn === 'send') {
+            this.router.navigateByUrl('/transaction');
+          }
+          else if (btn === 'atmRequest') {
+            this.router.navigateByUrl('/transaction/atmRequest');
+          }
+          else if (btn === 'scanner') {
+            this.router.navigateByUrl('/qrCode/scanner');
+          }
+        }
+      }).catch(err => {
+        if (btn === 'send') {
+          this.router.navigateByUrl('/transaction');
+        } else if (btn === 'atmRequest') {
+          this.router.navigateByUrl('/transaction/atmRequest');
+        } else if (btn === 'scanner') {
+          this.router.navigateByUrl('/qrCode/scanner');
+        }
+      })
 
-  getBalance(){
+    }
+  }
+  generateDirectory() {
+    Filesystem.readdir({
+      path: 'outbound',
+      directory: Directory.Data
+    }).then(data => { })
+      .catch(err => { Filesystem.mkdir({ path: 'outbound', directory: Directory.Data }) });
+    Filesystem.readdir({
+      path: 'inbound',
+      directory: Directory.Data
+    }).then(data => { })
+      .catch(err => { Filesystem.mkdir({ path: 'inbound', directory: Directory.Data }) })
+  }
+  getBalance() {
     this.transationService.getBalance(JSON.parse(this.sender).pSeed).subscribe(data => {
       this.balance = Math.trunc(data.standby_balance);
-      if(localStorage.getItem('balance')){
+      // if(localStorage.getItem('balance')){
 
-      }else{
-        localStorage.setItem('balance', JSON.stringify(this.balance))
-      }
+      // }else{
+      localStorage.setItem('balance', JSON.stringify(this.balance))
+      // }
     })
   }
 
@@ -182,5 +278,83 @@ export class HomeComponent {
     })
     return performBiometricVerificatin
   }
+
+  getAccountInfo() {
+    this.transationService.getAccountInfo(JSON.parse(this.sender).publicKey).subscribe(res => {
+      let seq = res.message.result.account_data.Sequence - 1
+      localStorage.setItem('sequence', JSON.stringify(seq))
+    })
+  }
+
+  syncOfflineTx() {
+    // let inBound =  await this.getInbound();
+    // console.log(inBound,"here");
+    
+    Filesystem.readdir({
+      path: '/outbound',
+      directory: Directory.Data
+    }).then((data) => {
+      console.log(data,"outbound");
+      if (!(data.files.length > 0)) {
+        this.messageService.add({ severity: 'error', detail: 'There are No offline transactions to zync' });
+        this.alertAudio.play();
+      }
+      else {
+        if (this.connectionStatus) {
+
+          this.spinner = true;
+          let lastEle = data.files.length - 1
+          data.files.map((transactions, index) => {
+            Filesystem.readFile({
+              path: `outbound/${transactions.name}`,
+              directory: Directory.Data,
+              encoding: Encoding.UTF8,
+            }).then(data => {
+              let res = JSON.stringify(data.data).split('|')[0];
+              let signed = res.slice(1);
+              this.transationService.submitOfflineTx(signed).subscribe(res => {
+                Filesystem.deleteFile({
+                  path: `outbound/${transactions.name}`,
+                  directory: Directory.Data,
+                }).then(dele => {
+                  if (lastEle == index) {
+                    this.audio.play();
+                    this.messageService.add({ severity: 'success', detail: 'Offline transactions were synced' });
+                    this.spinner = false;
+                    this.getBalance();
+                    this.getAccountInfo();
+                  }
+                })
+
+
+              })
+              // console.log(JSON.stringify(data.data).split('|')[0].slice(0,1));
+            })
+          })
+        }
+        else {
+          this.messageService.add({ severity: 'error', detail: 'No internet connection.' });
+        }
+      }
+    }
+    )
+      .catch(err => {
+        this.messageService.add({ severity: 'error', detail: 'There are No offline transactions to zync' });
+      })
+  }
+
+  recieveOfflineTx(){
+    this.router.navigate(['/qrCode/scanner',{ recieve: 'txReciver' }])
+  }
+
+
+  async getInbound() {
+    let inBoundFiles = await Filesystem.readFile({
+      path: 'inbound',
+      directory:Directory.Data
+    })
+    return inBoundFiles;
+  }
+
 
 }

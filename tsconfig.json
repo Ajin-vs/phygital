@@ -13,6 +13,8 @@
       "https": ["./node_modules/https-browserify"],
       "os": ["./node_modules/os-browserify"],
       "process": ["./node_modules/process"],
+      "constants":["./node_modules/path-browserify"],
+      "path":["./node_modules/path-browserify"]
   },
     "strict": true,
     "noImplicitOverride": true,
