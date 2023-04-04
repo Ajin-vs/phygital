@@ -21,16 +21,19 @@
           
            
             <hr>
-            <button icon="pi pi-check" styleClass="p-button-text"
-                    class="btn  btn-dark mt-2 float-end" type="submit"> Send Request</button>
-        </form>
+            <button *ngIf="!validate"  icon="pi pi-check" styleClass="p-button-text"
+                    class="btn  btn-dark mt-2 float-end" type="submit" [disabled]="validEscrow.length > 0 ? true:false" > Send Request</button>
+                    <i *ngIf="validate"  style="font-size: 1.5rem"
+                    class="pi pi-spin pi-spinner mt-2 float-end" > </i>
+        
+                </form>
 
     </p-dialog>
    
     <div class="p-accord  p-3">
         <p-accordion class="mt-5">
             <p-accordionTab class="m-3" *ngFor="let escrows of validEscrow">
-                <ng-template pTemplate="header"><strong>Amount ₹ {{escrows?.Amount}}</strong> 
+                <ng-template pTemplate="header"><strong>Amount ₹ {{escrows?.Amount/1000000}}</strong> 
                      </ng-template>
                 <ng-template pTemplate="content">
                     <p>SequnceNo: {{escrow?.sequence}}</p>

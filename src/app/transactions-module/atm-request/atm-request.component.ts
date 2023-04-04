@@ -12,7 +12,9 @@ export class AtmRequestComponent {
   sender:any = localStorage.getItem('sender')
   validEscrow :any =[]
   escrow:any=null;
+  validate = false;
   audio = new Audio("../../../assets/audio/success-1-6297.mp3");
+  alertAudio = new Audio("../../../assets/audio/error-call-to-attention-129258.mp3");
   escrowForm = new FormGroup({
     otp :new FormControl('',Validators.required),
     amount: new FormControl(null,Validators.required)
@@ -27,21 +29,35 @@ export class AtmRequestComponent {
   }
   displayModal=false
   onNewRequest(){
-    this.displayModal = true
+    if(this.validEscrow.length > 0){
+      this.messageService.add({severity:'error', detail: 'One Request is Pending...'});
+      this.alertAudio.play()
+    }else{
+      this.displayModal = true
+    }
+    
   }
   onSubmit(){
     if(this.escrowForm.valid){
-      
-      // localStorage.setItem("escrow",JSON.stringify(this.escrowForm.value))
-      this.transactionService.createEscrow(this.escrowForm.value,JSON.parse(this.sender).pSeed).subscribe(data=>{
-        this.escrow ={...this.escrowForm.value,sequence:data.Sequence}
-        localStorage.setItem("escrow",JSON.stringify(this.escrow));
-        this.getEscrow();
-        this.displayModal = false;
-        this.audio.play();
-        this.messageService.add({severity:'success', detail: `Escrow created with sequence number ${data.Sequence}`});
-
-      })
+      if(Number(localStorage.getItem('balance'))< Number(this.escrowForm.controls['amount'].value)){
+        this.messageService.add({severity:'error', detail: `Insufficient balance`});
+        this.alertAudio.play()
+      }
+      else{
+        this.validate = true
+        // localStorage.setItem("escrow",JSON.stringify(this.escrowForm.value))
+        this.transactionService.createEscrow(this.escrowForm.value,JSON.parse(this.sender).pSeed).subscribe(data=>{
+          this.escrow ={...this.escrowForm.value,sequence:data.Sequence}
+          localStorage.setItem("escrow",JSON.stringify(this.escrow));
+          this.getEscrow();
+          this.displayModal = false;
+          this.validate = false;
+          this.audio.play();
+          this.messageService.add({severity:'success', detail: `Escrow created with sequence number ${data.Sequence}`});
+  
+        })
+      }
+    
     }
     else{
 
@@ -55,11 +71,17 @@ export class AtmRequestComponent {
         message: 'Are you sure that you want to cancel this request?',
         accept: () => {          
           this.transactionService.cancelEscrow(JSON.parse(this.sender).pSeed,this.escrow).subscribe(data=>{
-            this.audio.play();
-            this.messageService.add({severity:'error', detail: data.meta.TransactionResult});
+            console.log(data.meta.TransactionResult);
+            
+            if(data.meta.TransactionResult.includes('tecNO_PERMISSION') || data.meta.TransactionResult.includes("tecNO_TARGET")){
+              this.messageService.add({severity:'error', detail: data.meta.TransactionResult});
+              this.alertAudio.play()
+            }
            
-            if( data.meta.TransactionResult !== "tesSUCCESS" ){
+            else{
+              this.messageService.add({severity:'success', detail: 'Atm withdrawal request is cancelled.'});
               this.getEscrow();
+              this.audio.play();
             }
           })
         }

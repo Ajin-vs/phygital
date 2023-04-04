@@ -24,6 +24,8 @@ export class TransactionHistoryComponent {
       this.transactionService.getTxHistory(JSON.parse(this.sender).publicKey).subscribe(data => {
         console.log(data);
         this.transactionDetails = data.message.result.transactions
+        console.log(this.transactionDetails);
+        
       }, error => console.log('oops', error))
     }
     else if(this.mode === 'Offline'){

@@ -15,7 +15,7 @@ export class QrCodeScannerComponent {
   sub: any = ''
   page: any = ''
   audio = new Audio("../../../assets/audio/success-1-6297.mp3");
-  
+
   constructor(private router: Router, private route: ActivatedRoute, private messageService: MessageService) {
 
   }
@@ -30,62 +30,78 @@ export class QrCodeScannerComponent {
   }
   public scanSuccessHandler(event: string) {
     if ((!localStorage.getItem('mode') || localStorage.getItem('mode') === 'Online' || localStorage.getItem('mode') === 'Offline') && (this.sub !== 'txReciver')) {
-      this.scanResult = event
-      let reciver = {
-        mobile: this.scanResult.split('|')[1],
-        name: this.scanResult.split('|')[0],
-        publicKey: this.scanResult.split('|')[2]
+      this.scanResult = event;
+      console.log(this.scanResult.split('|')[1], "mobile",);
+      if (!this.scanResult.split('|')[1] || this.scanResult.split('|')[1] == undefined) {
+        console.log("invalid qr code");
+        // this.messageService.add({ severity: 'success', detail: 'invalid qr code' });
 
+      } else {
+        let reciver = {
+          mobile: this.scanResult.split('|')[1],
+          name: this.scanResult.split('|')[0],
+          publicKey: this.scanResult.split('|')[2]
+
+        }
+        localStorage.setItem('reciever', JSON.stringify(reciver))
+        // if(!localStorage.getItem('mode') || localStorage.getItem('mode') == 'Online'){
+        //   this.router.navigate(['/transaction/payment'])    
+        // }
+
+        // else if(localStorage.getItem('mode') && localStorage.getItem('mode')==='Offline'){
+        //   // let mobile = this.scanResult.split('|')
+        // }
+        this.router.navigate(['/transaction/payment'])
+        this.scannerEnabled = false;
       }
-      localStorage.setItem('reciever', JSON.stringify(reciver))
-      // if(!localStorage.getItem('mode') || localStorage.getItem('mode') == 'Online'){
-      //   this.router.navigate(['/transaction/payment'])    
-      // }
 
-      // else if(localStorage.getItem('mode') && localStorage.getItem('mode')==='Offline'){
-      //   // let mobile = this.scanResult.split('|')
-      // }
-      this.router.navigate(['/transaction/payment'])
-      this.scannerEnabled = false;
     }
     else if (localStorage.getItem('mode') === 'Offline' && this.sub === 'txReciver') {
-      let sender:any = localStorage.getItem('sender');
+      let sender: any = localStorage.getItem('sender');
       let crtDate = new Date();
       let recive = event.split('|');
-      let path =''
+      let path = ''
       // console.log("here");
-      
+
       // console.log(event);
-     
+
       // console.log(`outbound/${crtDate}|${JSON.stringify(JSON.parse(recive[1]))}|${recive[2]}|'credit'.txt`,);
-      Filesystem.writeFile({
-        path: `outbound/${crtDate}|${JSON.stringify(JSON.parse(recive[1]))}|${recive[2]}|'credit'|${recive[3]}.txt`,
-        data: event,
-        directory: Directory.Data,
-        encoding: Encoding.UTF8
-      }).then(res=>{
-        let latestBalance =Number(localStorage.getItem('balance')) + Number(recive[2])
-        localStorage.setItem('balance',JSON.stringify(latestBalance) );
-        this.audio.play();
-        this.messageService.add({ severity: 'success', detail: 'Transaction Completed' });
-        this.router.navigate(['/home'])
-      })
+      if (!recive[1] || recive[1] == undefined) {
+        console.log("invalid data");
+
+      }
+      else {
+        Filesystem.writeFile({
+          path: `outbound/${crtDate}|${JSON.stringify(JSON.parse(recive[1]))}|${recive[2]}|'credit'|${recive[3]}.txt`,
+          data: event,
+          directory: Directory.Data,
+          encoding: Encoding.UTF8
+        }).then(res => {
+          let latestBalance = Number(localStorage.getItem('balance')) + Number(recive[2])
+          localStorage.setItem('balance', JSON.stringify(latestBalance));
+          this.audio.play();
+          this.messageService.add({ severity: 'success', detail: 'Transaction Completed' });
+          this.router.navigate(['/home'])
+        })
+      }
+
+
     }
-    else if(localStorage.getItem('mode') == 'MicroFinance'){
+    else if (localStorage.getItem('mode') == 'MicroFinance') {
       let crtDate = new Date();
       let recive = event.split('|');
-      let path =''
+      let path = ''
       // console.log("here");
-      
+
       // console.log(event);
-     
+
       // console.log(`outbound/${crtDate}|${JSON.stringify(JSON.parse(recive[1]))}|${recive[2]}|'credit'.txt`,);
       Filesystem.writeFile({
         path: `outbound/${crtDate}|${JSON.stringify(JSON.parse(recive[1]))}|${recive[2]}|'credit'|${recive[3]}|'finance'.txt`,
         data: event,
         directory: Directory.Data,
         encoding: Encoding.UTF8
-      }).then(res=>{
+      }).then(res => {
         // let latestBalance =Number(localStorage.getItem('balance')) + Number(recive[2])
         // localStorage.setItem('balance',JSON.stringify(latestBalance) );
         this.audio.play();

@@ -35,7 +35,8 @@ import { ToastModule } from 'primeng/toast';
     FormsModule,
     ReactiveFormsModule,
     BlockUIModule,
-    ToastModule
+    ToastModule,
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

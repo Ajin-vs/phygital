@@ -7,7 +7,8 @@ import * as xrpl from "xrpl";
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
-
+import { AppserviceService } from 'src/app/appservice.service';
+import {SpeedTestService} from 'ng-speed-test';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -28,23 +29,27 @@ export class HomeComponent {
   spinner = false;
   reciever ={mobile:9654331234}
   audio = new Audio("../../../assets/audio/success-1-6297.mp3");
-  alertAudio = new Audio("../../../assets/audio/error-call-to-attention-129258.mp3")
-  constructor(private transationService: TransactionServiceService, private messageService: MessageService, private router: Router) {
+  alertAudio = new Audio("../../../assets/audio/error-call-to-attention-129258.mp3");
+  netSpeed=0;
+  constructor( private speedTestService:SpeedTestService,private transationService: TransactionServiceService, private appService: AppserviceService,private messageService: MessageService, private router: Router) {
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
       { label: 'OFF', value: 'Offline' },
       { label: 'LOAN', value: 'MicroFinance' },
     ];
-
+   
+   
   }
 
   ngOnInit() {
+   
     this.generateDirectory();
     if ((localStorage.getItem('mode') === "MicroFinance") && localStorage.getItem('checked') == 'true') {
       this.checked = true;
     }
-    if (!localStorage.getItem("bio")) {
+    if (!this.appService.bio) {
       this.getBio().then(data => {
+        this.appService.bio = true;
         localStorage.setItem('bio', 'true');
       }).catch(err => {
         console.log(err, "error data", err.error);
@@ -65,7 +70,9 @@ export class HomeComponent {
       this.connectionStatus = status.connected
       if (!this.connectionStatus) {
         this.balance = localStorage.getItem('balance');
+        this.netSpeed =0;
       } else {
+        this.getNetSpeed();
         Filesystem.readdir({
           path: '/outbound',
           directory: Directory.Data
@@ -87,8 +94,12 @@ export class HomeComponent {
     });
 
     Network.addListener('networkStatusChange', status => {
+      this.getNetSpeed();
       this.connectionStatus = status.connected;
       if (this.connectionStatus) {
+        setInterval(()=>{
+          this.getNetSpeed();
+        },5000)
         Filesystem.readdir({
           path: '/outbound',
           directory: Directory.Data
@@ -109,6 +120,7 @@ export class HomeComponent {
         // this.getBalance();
       }
       else {
+        this.netSpeed =0;
         this.balance = localStorage.getItem('balance');
       }
     });
@@ -138,6 +150,26 @@ export class HomeComponent {
 
     // }
     // this.getBalance();
+  }
+
+  getNetSpeed(){
+    try {
+      this.speedTestService.getKbps(
+        {
+          iterations: 10,
+          retryDelay: 1500,
+        }
+      ).subscribe(
+        (speed) => {
+          this.netSpeed =speed;
+          // console.log('Your speed is ' + speed);
+        }
+      )
+    } catch (error) {
+      console.log(error);
+      
+    }
+   
   }
   payLender(){
     let tx =this.generateSignedTransaction(JSON.parse(this.sender).pSeed);
@@ -359,8 +391,10 @@ export class HomeComponent {
                     this.audio.play();
                     this.messageService.add({ severity: 'success', detail: 'Offline transactions were synced' });
                     this.spinner = false;
-                    this.getBalance();
-                    this.getAccountInfo();
+                    setTimeout(() => {
+                      this.getBalance();
+                      this.getAccountInfo();
+                    }, 5000);
                   }
                 })
 
@@ -381,9 +415,26 @@ export class HomeComponent {
       })
   }
 
-  recieveOfflineTx(){
-    this.router.navigate(['/qrCode/scanner',{ recieve: 'txReciver' }])
+  offlineTx(tx:string){
+    Filesystem.readdir({
+      path: '/outbound',
+      directory: Directory.Data
+    }).then(data=>{
+      if(data.files.length > 0){
+        this.messageService.add({ severity: 'error', detail: 'Zync previous offline transaction before doing other.' });
+        this.alertAudio.play();
+      }else{
+        if(tx == 'pay'){
+          this.router.navigateByUrl('/qrCode/scanner')
+        }else if(tx == 'recieve'){
+          this.router.navigate(['/qrCode/scanner',{ recieve: 'txReciver' }])
+        }
+      }
+    })
+   
+
   }
+
 
 
   async getInbound() {

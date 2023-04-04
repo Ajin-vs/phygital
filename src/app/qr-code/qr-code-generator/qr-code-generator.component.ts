@@ -11,7 +11,7 @@ export class QrCodeGeneratorComponent {
   public myAngularxQrCode: any ='';
   constructor(private blockChainService : BlockChainService, private router: Router){
     App.addListener('backButton', () => {
-      this.router.navigateByUrl('/home');
+      this.router.navigate(['/home'])
     });
     
   }

@@ -25,10 +25,15 @@
     
     <div *ngIf="mode == 'Online'">
         <div *ngFor="let transactionDetails of transactionDetails" class="row ">
+            <!-- {{transactionDetails.tx.TransactionType}} -->
+            <div class="row" *ngIf="!transactionDetails.tx.TransactionType.includes('Escrow')">
+
+            
             <div class="mt-5 col-2">
                 <span class="p-3 rounded rounded-5 icon-bg">AV</span>
             </div>
             <div class=" mt-5 text-start col-6">
+               
                 <strong *ngIf="transactionDetails.tx.Destination == senderId">{{transactionDetails.tx.Account |
                     slice:0:9 }}</strong>
                 <strong *ngIf="transactionDetails.tx.Destination != senderId">{{ transactionDetails.tx.Destination |
@@ -42,6 +47,7 @@
                 <p *ngIf="transactionDetails.tx.Destination != senderId" class="text-danger text-left">
                     -{{transactionDetails.tx.Amount/1000000}}</p>
             </div>
+        </div>
         </div>
     </div>
 </div>

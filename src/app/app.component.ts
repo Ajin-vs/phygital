@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { App } from '@capacitor/app';
 import { Toast } from '@capacitor/toast';
+import { AppserviceService } from './appservice.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -11,7 +12,7 @@ export class AppComponent {
   title = 'phygital_ui';
   backEvent = 0;
 
-  constructor(private router: Router) {
+  constructor(private router: Router,private appService: AppserviceService) {
 
     App.addListener('backButton', () => {
 
@@ -30,17 +31,23 @@ export class AppComponent {
         if (this.backEvent == 2) {
           App.exitApp();
         }
+      }else if (this.router.url.includes('/qrCode')){
+        router.navigate(['/home'])
       }
-
-
-      if (this.backEvent !== 2) {
+      else{
         window.history.back();
       }
+
+
+      // if (this.backEvent !== 2) {
+       
+      // }
 
     })
 
 
     App.addListener('pause', () => {
+      appService.bio=false;
       localStorage.removeItem("bio");
     })
 

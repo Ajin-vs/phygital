@@ -20,7 +20,7 @@ import { BadgeModule } from 'primeng/badge';
 import { OverlayModule } from 'primeng/overlay';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-
+import { SpeedTestModule } from 'ng-speed-test';
 @NgModule({
   declarations: [
     HomeComponent,
@@ -43,6 +43,7 @@ import { MessageService } from 'primeng/api';
     BlockUIModule,
     OverlayModule,
     ToastModule,
+    SpeedTestModule,
     BadgeModule
   ],
   providers: [MessageService]
