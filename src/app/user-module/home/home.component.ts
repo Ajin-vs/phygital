@@ -94,12 +94,12 @@ export class HomeComponent {
     });
 
     Network.addListener('networkStatusChange', status => {
-      this.getNetSpeed();
+      // this.getNetSpeed();
       this.connectionStatus = status.connected;
       if (this.connectionStatus) {
         setInterval(()=>{
           this.getNetSpeed();
-        },5000)
+        },10000)
         Filesystem.readdir({
           path: '/outbound',
           directory: Directory.Data
@@ -156,7 +156,7 @@ export class HomeComponent {
     try {
       this.speedTestService.getKbps(
         {
-          iterations: 10,
+          iterations: 3,
           retryDelay: 1500,
         }
       ).subscribe(
