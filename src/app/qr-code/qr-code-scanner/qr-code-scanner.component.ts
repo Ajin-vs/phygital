@@ -41,10 +41,12 @@ export class QrCodeScannerComponent {
 
   }
   public scanSuccessHandler(event: string) {
+
+    this.scannerEnabled = false
     if ((!localStorage.getItem('mode') || localStorage.getItem('mode') === 'Online' || localStorage.getItem('mode') === 'Offline') && (this.sub !== 'txReciver')) {
       this.scanResult = event;
       console.log(this.scanResult.split('|')[3], "mobile",);
-      if (!this.scanResult.split('|')[3] || this.scanResult.split('|')[3] == undefined) {
+      if (!this.scanResult.split('|')[3] || this.scanResult.split('|')[3] == undefined ||this.scanResult.split('|')[3] != 'Mscd12') {
         console.log("invalid qr code");
         // this.messageService.add({ severity: 'success', detail: 'invalid qr code' });
 
@@ -102,8 +104,10 @@ export class QrCodeScannerComponent {
           }).then(()=>{
             // this.audio.play();
             // this.messageService.add({ severity: 'success', detail: 'Transaction Completed' });
-            this.router.navigate(['/home'])
           })
+
+          this.router.navigate(['/home'])
+
          
         })
       }
