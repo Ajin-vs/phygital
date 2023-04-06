@@ -31,6 +31,7 @@ export class HomeComponent {
   audio = new Audio("../../../assets/audio/success-1-6297.mp3");
   alertAudio = new Audio("../../../assets/audio/error-call-to-attention-129258.mp3");
   netSpeed=0;
+  
   constructor( private speedTestService:SpeedTestService,private transationService: TransactionServiceService, private appService: AppserviceService,private messageService: MessageService, private router: Router) {
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
@@ -42,26 +43,72 @@ export class HomeComponent {
   }
 
   ngOnInit() {
-   
     this.generateDirectory();
+
+    // orginal starts here
+    // if (!this.appService.bio) {
+    //   console.log("here");
+      
+    //   this.getBio().then(data => {
+    //     this.appService.bio = true;
+    //     localStorage.setItem('bio', 'true');
+    //   }).catch(err => {
+    //     console.log(err, "error data", err.error);
+    //     console.log(JSON.stringify(err), "stringified")
+    //     if (err.toString().includes("Error: Verification error")) {
+    //       App.exitApp();
+    //     }
+    //     if (err.toString().includes("Error: Authentication failed")) {
+    //       App.exitApp();
+    //     }
+    //   })
+    // }
+// ends here
+// test starts here
+    if (!localStorage.getItem('bio') || localStorage.getItem('bio') == 'false') {
+      
+      NativeBiometric.isAvailable().then(result => {
+            if (result) {
+              const isFaceID = result.biometryType == BiometryType.MULTIPLE;
+    
+              NativeBiometric.verifyIdentity({
+                reason: "For easy log in",
+                title: "Log in",
+                subtitle: "Maybe add subtitle here?",
+                description: "Maybe a description too?",
+                useFallback: true,
+                maxAttempts: 3
+    
+              }).then((res) => {
+                console.log(res, "res true");
+                this.appService.bio = true;
+                localStorage.setItem('bio', 'true');
+                // resolve(true);
+                // return true
+              })
+                .catch((err) => {
+                  console.log(err, "errr");
+                  if (err.toString().includes("Error: Verification error")) {
+                          App.exitApp();
+                        }
+                        if (err.toString().includes("Error: Authentication failed")) {
+                          App.exitApp();
+                        }
+                  // reject(err)
+                  // return false
+                });
+            }
+            else {
+              // reject('no bio')
+    
+            }
+          })
+    }
+    // test ends 
     if ((localStorage.getItem('mode') === "MicroFinance") && localStorage.getItem('checked') == 'true') {
       this.checked = true;
     }
-    if (!this.appService.bio) {
-      this.getBio().then(data => {
-        this.appService.bio = true;
-        localStorage.setItem('bio', 'true');
-      }).catch(err => {
-        console.log(err, "error data", err.error);
-        console.log(JSON.stringify(err), "stringified")
-        if (err.toString().includes("Error: Verification error")) {
-          App.exitApp();
-        }
-        if (err.toString().includes("Error: Authentication failed")) {
-          App.exitApp();
-        }
-      })
-    }
+   
     // need to add inbound condition check
 
 
@@ -97,9 +144,9 @@ export class HomeComponent {
       // this.getNetSpeed();
       this.connectionStatus = status.connected;
       if (this.connectionStatus) {
-        setInterval(()=>{
+        // setInterval(()=>{
           this.getNetSpeed();
-        },10000)
+        // },10000)
         Filesystem.readdir({
           path: '/outbound',
           directory: Directory.Data
@@ -151,7 +198,42 @@ export class HomeComponent {
     // }
     // this.getBalance();
   }
+  getBio() {
+    let performBiometricVerificatin = new Promise<any>((resolve, reject) => {
 
+      NativeBiometric.isAvailable().then(result => {
+        if (result) {
+          const isFaceID = result.biometryType == BiometryType.MULTIPLE;
+
+          NativeBiometric.verifyIdentity({
+            reason: "For easy log in",
+            title: "Log in",
+            subtitle: "Maybe add subtitle here?",
+            description: "Maybe a description too?",
+            useFallback: true,
+            maxAttempts: 3
+
+          }).then((res) => {
+            console.log(res, "res true");
+
+            resolve(true);
+            // return true
+          })
+            .catch((err) => {
+              console.log(err, "errr");
+              reject(err)
+              // return false
+            });
+        }
+        else {
+          reject('no bio')
+
+        }
+      })
+
+    })
+    return performBiometricVerificatin
+  }
   getNetSpeed(){
     try {
       this.speedTestService.getKbps(
@@ -200,7 +282,7 @@ export class HomeComponent {
           directory: Directory.Data,
           encoding: Encoding.UTF8
         }).then(data => {
-          localStorage.setItem('transaction', `${signed.tx_blob}|${JSON.stringify(this.reciever.mobile)}|'100'|'debit'|${JSON.stringify(JSON.parse(this.sender).mobile)}`);
+          localStorage.setItem('transaction', `${signed.tx_blob}|${JSON.stringify(this.reciever.mobile)}|'100'|'debit'|${JSON.stringify(JSON.parse(this.sender).mobile)}|'finance'`);
           // writeFile(`../../../outbound/${crtDate}.json`, 'Hello content!',()=>{})
           //need to implement balance reduction from localstorage
           localStorage.setItem('sequence',JSON.stringify(seq));
@@ -262,6 +344,7 @@ export class HomeComponent {
       .catch(err => { Filesystem.mkdir({ path: 'inbound', directory: Directory.Data }) })
   }
   getBalance() {
+
     this.transationService.getBalance(JSON.parse(this.sender).pSeed).subscribe(data => {
       this.balance = Math.trunc(data.standby_balance);
       // if(localStorage.getItem('balance')){
@@ -314,42 +397,7 @@ export class HomeComponent {
       this.sidebarVisible = false;
     }
   }
-  getBio() {
-    let performBiometricVerificatin = new Promise<any>((resolve, reject) => {
-
-      NativeBiometric.isAvailable().then(result => {
-        if (result) {
-          const isFaceID = result.biometryType == BiometryType.MULTIPLE;
-
-          NativeBiometric.verifyIdentity({
-            reason: "For easy log in",
-            title: "Log in",
-            subtitle: "Maybe add subtitle here?",
-            description: "Maybe a description too?",
-            useFallback: true,
-            maxAttempts: 3
-
-          }).then((res) => {
-            console.log(res, "res true");
-
-            resolve(true);
-            // return true
-          })
-            .catch((err) => {
-              console.log(err, "errr");
-              reject(err)
-              // return false
-            });
-        }
-        else {
-          reject('no bio')
-
-        }
-      })
-
-    })
-    return performBiometricVerificatin
-  }
+  
 
   getAccountInfo() {
     this.transationService.getAccountInfo(JSON.parse(this.sender).publicKey).subscribe(res => {

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { MessageService } from 'primeng/api';
+import { TextToSpeech } from '@capacitor-community/text-to-speech';
 
 @Component({
   selector: 'app-qr-code-scanner',
@@ -25,14 +26,25 @@ export class QrCodeScannerComponent {
     console.log(this.sub);
 
   }
+  speak = async (amt:number) => {
+    await TextToSpeech.speak({
+      text: `Recieved ${amt} rupees`,
+      lang: 'en-US',
+      rate: 1.0,
+      pitch: 1.0,
+      volume: 1.0,
+      category: 'ambient'
+    });
+  };
+
   scanCompleteHandler(event: any) {
 
   }
   public scanSuccessHandler(event: string) {
     if ((!localStorage.getItem('mode') || localStorage.getItem('mode') === 'Online' || localStorage.getItem('mode') === 'Offline') && (this.sub !== 'txReciver')) {
       this.scanResult = event;
-      console.log(this.scanResult.split('|')[1], "mobile",);
-      if (!this.scanResult.split('|')[1] || this.scanResult.split('|')[1] == undefined) {
+      console.log(this.scanResult.split('|')[3], "mobile",);
+      if (!this.scanResult.split('|')[3] || this.scanResult.split('|')[3] == undefined) {
         console.log("invalid qr code");
         // this.messageService.add({ severity: 'success', detail: 'invalid qr code' });
 
@@ -66,7 +78,7 @@ export class QrCodeScannerComponent {
       // console.log(event);
 
       // console.log(`outbound/${crtDate}|${JSON.stringify(JSON.parse(recive[1]))}|${recive[2]}|'credit'.txt`,);
-      if (!recive[1] || recive[1] == undefined) {
+      if (!recive[4] || recive[4] == undefined) {
         console.log("invalid data");
 
       }
@@ -77,11 +89,22 @@ export class QrCodeScannerComponent {
           directory: Directory.Data,
           encoding: Encoding.UTF8
         }).then(res => {
-          let latestBalance = Number(localStorage.getItem('balance')) + Number(recive[2])
+          // this.speak(Number(recive[2]));
+          let latestBalance = Number(localStorage.getItem('balance')) + Number(recive[2]);
           localStorage.setItem('balance', JSON.stringify(latestBalance));
-          this.audio.play();
-          this.messageService.add({ severity: 'success', detail: 'Transaction Completed' });
-          this.router.navigate(['/home'])
+          TextToSpeech.speak({
+            text: `Recieved ${Number(recive[2])} rupees`,
+            lang: 'en-US',
+            rate: 1.0,
+            pitch: 1.0,
+            volume: 1.0,
+            category: 'ambient'
+          }).then(()=>{
+            // this.audio.play();
+            // this.messageService.add({ severity: 'success', detail: 'Transaction Completed' });
+            this.router.navigate(['/home'])
+          })
+         
         })
       }
 

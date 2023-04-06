@@ -47,6 +47,9 @@ export class TransactionServiceService {
   public submitOfflineTx(signed:any):Observable<any>{
     return this.httpClient.post(this.domain +'/submitOfflineXrp',{signed:signed})
   }
+  public sign():Observable<any>{
+    return this.httpClient.get(this.domain +'/sign')
+  }
 
   getOfflineTransactionHs= new Observable((observer)=>{
     Filesystem.readdir({path:'outbound',directory:Directory.Data}).then(res=>{

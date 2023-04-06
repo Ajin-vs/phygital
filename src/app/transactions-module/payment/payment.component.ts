@@ -121,7 +121,7 @@ export class PaymentComponent {
                   encoding: Encoding.UTF8
                 }).then(data => {
                   console.log(data);
-                  localStorage.setItem('transaction', `${signed.tx_blob}|${JSON.stringify(JSON.parse(this.reciever).mobile)}|${this.amount}|${JSON.parse(this.sender).mobile}`);
+                  localStorage.setItem('transaction', `${signed.tx_blob}|${JSON.stringify(JSON.parse(this.reciever).mobile)}|${this.amount}|${JSON.parse(this.sender).mobile}|'phy'`);
                   // writeFile(`../../../outbound/${crtDate}.json`, 'Hello content!',()=>{})
                   this.transfered = false;
                   //need to implement balance reduction from localstorage
