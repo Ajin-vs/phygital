@@ -6,7 +6,7 @@ import { delay, Observable, of, tap } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-public domain ='http://192.168.29.187:3000'
+public domain ='http://mvp-phygital-wallet.ap-south-1.elasticbeanstalk.com'
 isUserLoggedIn: boolean = false;
 
   constructor(private httpClient: HttpClient) { }
@@ -30,6 +30,10 @@ isUserLoggedIn: boolean = false;
    //       console.log("Is User Authentication is successful: " + val); 
    //    })
    // );
+   }
+
+   signUp(): Observable<any> {
+      return this.httpClient.post(this.domain + '/getAccount',{})
    }
 
    logout(): void {

@@ -6,9 +6,9 @@
         <div class=" mb-5">
             <p class="text-dark mb-4">People</p>
             <div *ngIf="userDeatils" >
-                <div  *ngFor="let user of userDeatils" (click)="onPayment(user)" class="cursor-pointer">
-                    <p >  <span class="p-1 rounded rounded-5 bg-success me-2">{{getShortName(user?.name)}}</span> {{user?.name}} <br></p>
-                    <p class="ms-4 "> {{user?.mobile}}</p>
+                <div   (click)="onPayment()" class="cursor-pointer">
+                    <p >  <span class="p-1 rounded rounded-5 bg-success me-2">{{userDeatils.firstName |slice:0:1}}{{userDeatils.lastName |slice:0:1}}</span> {{userDeatils.firstName}} {{userDeatils.lastName}} <br></p>
+                    <p class="ms-4 "> {{userDeatils.mobileNumber}}</p>
                 </div>
                 
             </div>

@@ -7,11 +7,11 @@ import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
   providedIn: 'root'
 })
 export class TransactionServiceService {
-  public domain ='http://192.168.29.187:3000'
+  public domain ='http://mvp-phygital-wallet.ap-south-1.elasticbeanstalk.com'
   constructor(public httpClient: HttpClient) { }
 
   public getUser(number:number):Observable<any>{
-    return this.httpClient.get(this.domain + '/getUser',{params:{number:number}})
+    return this.httpClient.get('http://mvp-phygital-customer.ap-south-1.elasticbeanstalk.com/api/mvp/customer/user/'+number )
   }
 
   public validatePin(mobile:number,cbdcPin:number):Observable<any>{

@@ -27,16 +27,16 @@ export class LoginComponent {
   }
   public login(){
     if(this.loginForm.valid){
-      this.authService.login(this.loginForm.controls['userName'].value,'admin').subscribe(res=>{
-        localStorage.setItem('isUserLoggedIn', true ? "true" : "false"); 
-        let sender ={
-          mobile:this.loginForm.controls['userName'].value,
-          pSeed:res.my_wallet.seed,
-          publicKey:res.my_wallet.classicAddress
-        }
-        localStorage.setItem('sender', JSON.stringify(sender))
-        this.router.navigateByUrl('/home');
-      })
+      // this.authService.login(this.loginForm.controls['userName'].value,'admin').subscribe(res=>{
+      //   localStorage.setItem('isUserLoggedIn', true ? "true" : "false"); 
+      //   let sender ={
+      //     mobile:this.loginForm.controls['userName'].value,
+      //     pSeed:res.my_wallet.seed,
+      //     publicKey:res.my_wallet.classicAddress
+      //   }
+      //   localStorage.setItem('sender', JSON.stringify(sender))
+      //   this.router.navigateByUrl('/home');
+      // })
     }
    
   }

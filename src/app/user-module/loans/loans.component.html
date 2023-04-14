@@ -1,0 +1,44 @@
+<div class=" bg">
+<div class="d-flex flex-column w-25 ms-auto p-2">
+    <h4  (click)="changeMode(item.value)"  *ngFor="let item of justifyOptions "  class="text-center mb-2 rounded crs shadow " [ngClass]="(mode==item.value) ? 'bg-success border' : 'bg-info'"><strong class="badge text-center crs" >{{item.label}}</strong></h4>
+
+</div>
+<h4 class="text-center pt-3 pb-2">Next three upcoming EMIs</h4>
+<hr >
+<!-- <div class="d-flex flex-column float-end justify-content-between mb-2 me-3">
+    <h4  (click)="changeMode(item.value)"  *ngFor="let item of justifyOptions "  class="text-center mb-2 rounded crs shadow" [ngClass]="(mode==item.value) ? 'bg-success border' : 'bg-info'"><strong class="badge text-center crs" >{{item.label}}</strong></h4>
+  
+</div> -->
+<div class="p-3 ">
+    <table class="table table-bordered text-center  border-3 border-dark mt-5">
+        <thead>
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Pay</th>
+            </tr>
+        </thead>
+       <tbody>
+        <tr >
+            <td  >10/04/2023</td>
+            <td>400</td>
+            <td><i class="pi pi-qrcode text-primary"></i></td>
+        </tr>
+        <tr>
+            <td >10/05/2023</td>
+            <td>400</td>
+            <td><i class="pi pi-qrcode text-primary"></i></td>
+    
+        </tr>
+        <tr>
+            <td >10/06/2023</td>
+            <td>400</td>
+            <td><i class="pi pi-qrcode text-primary"></i></td>
+    
+        </tr>
+        
+       </tbody>
+    </table>
+</div>
+
+</div>

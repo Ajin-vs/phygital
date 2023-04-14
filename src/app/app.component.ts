@@ -29,6 +29,8 @@ export class AppComponent {
           this.backEvent = 0;
         }, 2000);
         if (this.backEvent == 2) {
+          appService.bio=false;
+          localStorage.removeItem("bio");
           App.exitApp();
         }
       }else if (this.router.url.includes('/qrCode')){
@@ -46,12 +48,18 @@ export class AppComponent {
     })
 
 
-    App.addListener('pause', () => {
-      appService.bio=false;
-      localStorage.removeItem("bio");
+    // App.addListener('pause', () => {
+    //   appService.bio=false;
+    //   localStorage.removeItem("bio");
+    // })
+
+ App.addListener('appStateChange', (res) => {
+  if(!res.isActive){
+    appService.bio=false;
+    localStorage.removeItem("bio");
+  }
+   
     })
-
-
 
   }
 

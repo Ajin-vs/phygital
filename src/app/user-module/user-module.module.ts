@@ -21,11 +21,13 @@ import { OverlayModule } from 'primeng/overlay';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { SpeedTestModule } from 'ng-speed-test';
+import { LoansComponent } from './loans/loans.component';
 @NgModule({
   declarations: [
     HomeComponent,
     UserParentComponent,
-    TransactionHistoryComponent
+    TransactionHistoryComponent,
+    LoansComponent
   ],
   imports: [
     CommonModule,

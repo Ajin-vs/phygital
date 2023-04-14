@@ -2,7 +2,7 @@
     <div class="container">
         <p-toast position="center"></p-toast>
     </div>
-   
+
 
     <!-- <div #pnl header="Header" styleClass="mt-4">
         <p class="m-0">
@@ -10,8 +10,8 @@
             consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
         </p>
     </div> -->
-    <div class="" >
-        
+    <div class="">
+
         <!-- <p-sidebar [(visible)]="sidebarVisible">
             <div class="d-flex justify-content-around mt-5">
                 <strong >Loan Agent</strong>
@@ -20,21 +20,23 @@
            
         </p-sidebar> -->
     </div>
-  
-    <i class="pi pi-user rounded rounded-5 shadow bg-success text-light p-3 mb-3" [ngClass]="(mode=='MicroFinance') ? 'crs' : null" style="font-size: 1.5rem" (click)="sidebarVisibility()">
+
+    <i class="pi pi-user rounded rounded-5 shadow bg-success text-light p-3 mb-3"
+        [ngClass]="(mode=='MicroFinance') ? 'crs' : null" style="font-size: 1.5rem" (click)="sidebarVisibility()">
     </i>
-    <strong class="ms-3 fs-2">Ajin</strong>
-    
-   <span class="float-end">
-    <!-- {{netSpeed}} -->
-    
-    <i class="pi pi-circle-fill ms-3 crs " [ngClass]="netSpeed >= 450 ? 'text-success':'text-danger'" style="font-size: 1.5rem"   ></i>
+    <strong class="ms-3 fs-2">{{firstName | slice: 0:5}}</strong>
 
-    <i class="pi pi-bell ms-3 crs" style="font-size: 1.5rem"   (click)="op.toggle($event)" pBadge value="0"></i>
+    <span class="float-end">
+        <!-- {{netSpeed}} -->
 
-    <i class="pi pi-sign-out rounded rounded-5   text-dark p-3 mb-3 ms-1" style="font-size: 1.5rem"></i>
-    
-   </span>
+        <i class="pi pi-circle-fill ms-3 crs " [ngClass]="netSpeed >= 450 ? 'text-success':'text-danger'"
+            style="font-size: 1.5rem"></i>
+
+        <i class="pi pi-bell ms-3 crs" style="font-size: 1.5rem" (click)="op.toggle($event)" pBadge value="0"></i>
+
+        <i class="pi pi-sign-out rounded rounded-5   text-dark p-3 mb-3 ms-1" style="font-size: 1.5rem"></i>
+
+    </span>
 
     <p-overlayPanel #op>
         <!-- <img src="https://primefaces.org/cdn/primeng/images/demo/product/bamboo-watch.jpg" alt="product" /> -->
@@ -46,145 +48,173 @@
         <h4 class="text-center text-light"> <strong>{{mode}} Mode</strong></h4>
     </div>
     <div class="position-absolute qr" *ngIf="checked">
-        <i routerLink="/qrCode/scanner" class=" text-center pi pi-qrcode shadow p-5 w-100 border border-primary icon-bg rounded rounded-2"
-        style="font-size: 2rem" ></i>
+        <i routerLink="/qrCode/scanner"
+            class=" text-center pi pi-qrcode shadow p-5 w-100 border border-primary icon-bg rounded rounded-2"
+            style="font-size: 2rem"></i>
 
     </div>
-    
-    
-<div [class]="checked ? 'filter-bg' : null"  > 
 
 
-    <div class="pstyle position-relative ">
-        <div class="position-absolute top-0 w-100">
-            <div class="container mt-2 text-light">
-                <p>Current Balance</p>
-                <!-- <i class="pi pi-eye text-light m-1"
+    <div [class]="checked ? 'filter-bg' : null">
+
+
+        <div class="pstyle position-relative ">
+            <div class="position-absolute top-0 w-100">
+                <div class="container mt-2 text-light">
+                    <p>Current Balance</p>
+                    <!-- <i class="pi pi-eye text-light m-1"
                                             style="font-size: 1.5rem"></i> -->
-                <h4> <strong> e₹ {{balance}}</strong></h4>
-                <div class="  d-flex flex-column float-end justify-content-between ">
-                    <h4  (click)="changeMode(item.value)"  *ngFor="let item of justifyOptions "  class="text-center mb-2 rounded crs shadow" [ngClass]="(mode==item.value) ? 'bg-success border' : 'bg-info'"><strong class="badge text-center crs" >{{item.label}}</strong></h4>
-                    <!-- <button class="btn btn-danger mb-2">OFF</button>
+                    
+                        <h4 *ngIf="bal"> <strong> e₹ {{balance}}</strong></h4>
+                        <i *ngIf="!bal"
+                        class="pi pi-sync p-1 pi-spin" style="font-size: 1.5rem"
+                        aria-placeholder="tool"></i>
+                    
+                    <div class="  d-flex flex-column float-end justify-content-between ">
+                        <h4 (click)="changeMode(item.value)" *ngFor="let item of justifyOptions "
+                            class="text-center mb-2 rounded crs shadow"
+                            [ngClass]="(mode==item.value) ? 'bg-success border' : 'bg-info'"><strong
+                                class="badge text-center crs">{{item.label}}</strong></h4>
+                        <!-- <button class="btn btn-danger mb-2">OFF</button>
                     <button class="btn btn-danger">Loan</button> -->
+                    </div>
                 </div>
-            </div>
-            
 
-            <!-- <div >
+
+                <!-- <div >
                 <p-selectButton [options]="justifyOptions" [(ngModel)]="mode" optionValue="value" class="d-flex flex-row">
                         <p  *ngFor="let item of justifyOptions " [ngClass]="(mode==item.value) ? 'text-success border' : 'text-danger'" > <strong>{{item.label}}</strong></p>
                 </p-selectButton>
             </div> -->
-        </div>
-        <img src="../../../assets/images/homeImage.jpeg" class="img rounded rounded-5 shadow" alt="">
-        <!-- <img src="Downloads/test.png" class="img rounded rounded-5 shadow" alt=""> -->
-
-        <div class="position-absolute bottom-0 w-100">
-            <div class="container text-white">
-                <p>Reserve Bank of India</p>
-                <h4>Digital Rupee Wallet</h4>
             </div>
+            <img src="../../../assets/images/homeImage.jpeg" class="img rounded rounded-5 shadow" alt="">
+            <!-- <img src="Downloads/test.png" class="img rounded rounded-5 shadow" alt=""> -->
 
-            <div class="rounded rounded-3 shadow bg-white p-5">
+            <div class="position-absolute bottom-0 w-100">
+                <div class="container text-white">
+                    <p>Reserve Bank of India</p>
+                    <h4>Digital Rupee Wallet</h4>
+                </div>
+
+                <div class="rounded rounded-3 shadow bg-white p-5">
 
 
-                <div class="d-flex justify-content-around text-center" *ngIf="mode == 'Online'">
-                    <span>
-                        <i routerLink="/qrCode" class="pi pi-plus shadow icon-bg text-light p-3 rounded rounded-2"
-                            style="font-size: 1.5rem"></i>
-                        <br>
-                        <strong>Load</strong>
-                    </span>
-                    <span>
-                        <button class="pi pi-arrow-up shadow text-light icon-bg p-3 rounded rounded-2 border border-0"
-                            style="font-size: 1.5rem" (click)="onlineSend('send')"></button>
-                        <br>
-                        <strong>Send</strong>
-                    </span>
-                    <span>
-                        <i class="pi pi-minus shadow icon-bg text-light p-3 rounded rounded-2"
-                            style="font-size: 1.5rem"></i>
-                        <br>
-                        <strong>Redeem</strong>
-                    </span>
-                    <span>
-                        <i class="pi pi-briefcase shadow icon-bg text-light p-3 rounded rounded-2"
-                            style="font-size: 1.5rem" (click)="onlineSend('atmRequest')"></i>
-                        <br>
-                        <strong>ATM</strong>
-                    </span>
-                    <!-- <span>
+                    <div class="d-flex justify-content-around text-center" *ngIf="mode == 'Online'">
+                        <span>
+                            <i routerLink="/qrCode" class="pi pi-plus shadow icon-bg text-light p-3 rounded rounded-2"
+                                style="font-size: 1.5rem"></i>
+                            <br>
+                            <strong>Load</strong>
+                        </span>
+                        <span>
+                            <button
+                                class="pi pi-arrow-up shadow text-light icon-bg p-3 rounded rounded-2 border border-0"
+                                style="font-size: 1.5rem" (click)="onlineSend('send')"></button>
+                            <br>
+                            <strong>Send</strong>
+                        </span>
+                        <span>
+                            <i class="pi pi-minus shadow icon-bg text-light p-3 rounded rounded-2"
+                                style="font-size: 1.5rem"></i>
+                            <br>
+                            <strong>Redeem</strong>
+                        </span>
+                        <span>
+                            <i class="pi pi-briefcase shadow icon-bg text-light p-3 rounded rounded-2"
+                                style="font-size: 1.5rem" (click)="onlineSend('atmRequest')"></i>
+                            <br>
+                            <strong>ATM</strong>
+                        </span>
+                        <!-- <span>
                         <i class="pi pi-bolt shadow icon-bg text-light p-3 rounded rounded-2"
                             style="font-size: 1.5rem"></i>
                         <br>
                         <strong>Load</strong>
                     </span> -->
-                    
-                </div>
-                <div class="d-flex justify-content-around text-center" *ngIf="mode == 'Offline'">
-                    <span>
-                        <i (click)="offlineTx('pay')"  class="pi pi-arrow-up shadow icon-bg text-light p-3 rounded rounded-2"
-                            style="font-size: 1.5rem"></i>
-                        <br>
-                        <strong>Pay</strong>
-                    </span>
-                    <span>
-                        <i class="pi pi-qrcode shadow text-light icon-bg p-3 rounded rounded-2" aria-disabled="true"
-                            style="font-size: 1.5rem" routerLink="/qrCode"></i>
-                        <br>
-                        <strong>Account QR</strong>
-                    </span>
-                    <span>
-                        <i class="pi pi-arrow-down shadow icon-bg text-light p-3 rounded rounded-2"
-                            style="font-size: 1.5rem" (click)="offlineTx('recieve')"></i>
-                        <br>
-                        <strong>Recieve</strong>
-                    </span>
-                    <!-- <span>
+
+                    </div>
+                    <div class="d-flex justify-content-around text-center" *ngIf="mode == 'Offline'">
+                        <span>
+                            <i (click)="offlineTx('pay')"
+                                class="pi pi-arrow-up shadow icon-bg text-light p-3 rounded rounded-2"
+                                style="font-size: 1.5rem"></i>
+                            <br>
+                            <strong>Pay</strong>
+                        </span>
+                        <span>
+                            <i class="pi pi-qrcode shadow text-light icon-bg p-3 rounded rounded-2" aria-disabled="true"
+                                style="font-size: 1.5rem" routerLink="/qrCode"></i>
+                            <br>
+                            <strong>Account QR</strong>
+                        </span>
+                        <span>
+                            <i class="pi pi-arrow-down shadow icon-bg text-light p-3 rounded rounded-2"
+                                style="font-size: 1.5rem" (click)="offlineTx('recieve')"></i>
+                            <br>
+                            <strong>Recieve</strong>
+                        </span>
+                        <!-- <span>
                         <i class="pi pi-bolt shadow icon-bg text-light p-3 rounded rounded-2"
                             style="font-size: 1.5rem"></i>
                         <br>
                         <strong>Load</strong>
                     </span> -->
-                    
+
+                    </div>
+
+                    <div class="text-center" *ngIf="mode == 'MicroFinance'">
+                        <h3>Existing Loans</h3>
+                        <hr>
+                    </div>
                 </div>
 
-                <div class="text-center" *ngIf="mode == 'MicroFinance'">
-                    <h3>Existing Loans</h3>
-                    <hr>
-                </div>
+            </div>
+        </div>
+        <div class="">
+            <div class="pt-4 text-center" *ngIf="mode == 'Online'">
+                <button class="crs shadow p-4 border border-primary icon-bg rounded rounded-2"
+                    (click)="onlineSend('scanner')"> <i class="pi pi-qrcode p-1" style="font-size: 1.5rem"></i></button>
+
+                <button (click)="syncOfflineTx()"
+                    class="crs shadow p-4 border border-primary icon-bg rounded rounded-2 ms-4"><i
+                        class="pi pi-sync p-1 " [ngClass]=" spinner ?'pi-spin':null" style="font-size: 1.5rem"
+                        aria-placeholder="tool"></i></button>
+
             </div>
 
-        </div>
-    </div>
-    <div class="" >
-        <div class="pt-4 text-center" *ngIf="mode == 'Online'" >
-            <button  class="crs shadow p-4 border border-primary icon-bg rounded rounded-2"
-                 (click)="onlineSend('scanner')" > <i class="pi pi-qrcode p-1" style="font-size: 1.5rem"></i></button>
 
-               <button (click)="syncOfflineTx()" class="crs shadow p-4 border border-primary icon-bg rounded rounded-2 ms-4"><i class="pi pi-sync p-1 " [ngClass]=" spinner ?'pi-spin':null" style="font-size: 1.5rem" aria-placeholder="tool" ></i></button> 
+            <div class="mb-5 mt-5" *ngIf="mode == 'MicroFinance'">
+                <table class="table table-bordered text-center  border-3 border-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">Loans</th>
+                            <th scope="col">Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-primary" (click)="nextTransactions()">MFC-1</td>
+                            <td>20000</td>
+                        </tr>
 
-        </div>
-
-
-        <div class="p-accord mb-5" *ngIf="mode == 'MicroFinance'">
-            <p-accordion class="mt-3">
+                    </tbody>
+                </table>
+                <!-- <p-accordion class="mt-3">
                 <p-accordionTab class="m-3">
                     <ng-template pTemplate="header"><strong>Loan 1 </strong>
                     </ng-template>
                     <ng-template pTemplate="content">
                         <h5> Due Amount: 100 ₹</h5>
-                        <!-- <p>OTP:</p> -->
                         <button class="float-end btn btn-primary" label="" (click)="payLender()">Pay Lender</button>
                     </ng-template>
 
                 </p-accordionTab>
-            </p-accordion>
+            </p-accordion> -->
+            </div>
         </div>
-    </div>
 
-<!-- <h1>{{connectionStatus}} </h1> -->
-    <div class="p-3 " *ngIf="mode == 'Online'">
+        <!-- <h1>{{connectionStatus}} </h1> -->
+        <!-- <div class="p-3 " *ngIf="mode == 'Online'">
         <h4 class="pb-2">People</h4>
         <div class="d-flex justify-content-around text-center text-white mb-5">
             <span class="p-3  rounded rounded-5 icon-bg">AV</span>
@@ -194,6 +224,6 @@
 
         </div>
 
+    </div> -->
     </div>
-</div>
 </div>

@@ -8,7 +8,7 @@ import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { AppserviceService } from 'src/app/appservice.service';
-import {SpeedTestService} from 'ng-speed-test';
+import { SpeedTestService } from 'ng-speed-test';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -17,9 +17,9 @@ import {SpeedTestService} from 'ng-speed-test';
 export class HomeComponent {
   public connectionStatus: boolean = false;
   // 
-  
+
   balance: any = 0
-  sender: any = localStorage.getItem('sender');
+  sender: any;
   justifyOptions: any[] = [];
   mode: any = "Online";
   sidebarVisible: boolean = false;
@@ -27,28 +27,32 @@ export class HomeComponent {
   checked: boolean = false;
   blockedPanel = false;
   spinner = false;
-  reciever ={mobile:9654331234}
+  reciever = { mobile: 9654331234 }
   audio = new Audio("../../../assets/audio/success-1-6297.mp3");
   alertAudio = new Audio("../../../assets/audio/error-call-to-attention-129258.mp3");
-  netSpeed=0;
-  
-  constructor( private speedTestService:SpeedTestService,private transationService: TransactionServiceService, private appService: AppserviceService,private messageService: MessageService, private router: Router) {
+  netSpeed = 0;
+  firstName: any;
+  bal: boolean = true;
+  constructor(private speedTestService: SpeedTestService, private transationService: TransactionServiceService, private appService: AppserviceService, private messageService: MessageService, private router: Router) {
+
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
       { label: 'OFF', value: 'Offline' },
       { label: 'LOAN', value: 'MicroFinance' },
     ];
-   
-   
+
+
   }
 
   ngOnInit() {
+    this.sender = localStorage.getItem('sender');
+    this.firstName = JSON.parse(this.sender).firstName
     this.generateDirectory();
 
     // orginal starts here
     // if (!this.appService.bio) {
     //   console.log("here");
-      
+
     //   this.getBio().then(data => {
     //     this.appService.bio = true;
     //     localStorage.setItem('bio', 'true');
@@ -63,52 +67,52 @@ export class HomeComponent {
     //     }
     //   })
     // }
-// ends here
-// test starts here
+    // ends here
+    // test starts here
     if (!localStorage.getItem('bio') || localStorage.getItem('bio') == 'false') {
-      
+
       NativeBiometric.isAvailable().then(result => {
-            if (result) {
-              const isFaceID = result.biometryType == BiometryType.MULTIPLE;
-    
-              NativeBiometric.verifyIdentity({
-                reason: "For easy log in",
-                title: "Log in",
-                subtitle: "Maybe add subtitle here?",
-                description: "Maybe a description too?",
-                useFallback: true,
-                maxAttempts: 3
-    
-              }).then((res) => {
-                console.log(res, "res true");
-                this.appService.bio = true;
-                localStorage.setItem('bio', 'true');
-                // resolve(true);
-                // return true
-              })
-                .catch((err) => {
-                  console.log(err, "errr");
-                  if (err.toString().includes("Error: Verification error")) {
-                          App.exitApp();
-                        }
-                        if (err.toString().includes("Error: Authentication failed")) {
-                          App.exitApp();
-                        }
-                  // reject(err)
-                  // return false
-                });
-            }
-            else {
-              // reject('no bio')
-    
-            }
+        if (result) {
+          const isFaceID = result.biometryType == BiometryType.MULTIPLE;
+
+          NativeBiometric.verifyIdentity({
+            reason: "For easy log in",
+            title: "Log in",
+            subtitle: "Maybe add subtitle here?",
+            description: "Maybe a description too?",
+            useFallback: true,
+            maxAttempts: 3
+
+          }).then((res) => {
+            console.log(res, "res true");
+            this.appService.bio = true;
+            localStorage.setItem('bio', 'true');
+            // resolve(true);
+            // return true
           })
+            .catch((err) => {
+              console.log(err, "errr");
+              if (err.toString().includes("Error: Verification error")) {
+                App.exitApp();
+              }
+              if (err.toString().includes("Error: Authentication failed")) {
+                App.exitApp();
+              }
+              // reject(err)
+              // return false
+            });
+        }
+        else {
+          // reject('no bio')
+
+        }
+      })
     }
     // test ends 
     if ((localStorage.getItem('mode') === "MicroFinance") && localStorage.getItem('checked') == 'true') {
       this.checked = true;
     }
-   
+
     // need to add inbound condition check
 
 
@@ -117,7 +121,7 @@ export class HomeComponent {
       this.connectionStatus = status.connected
       if (!this.connectionStatus) {
         this.balance = localStorage.getItem('balance');
-        this.netSpeed =0;
+        this.netSpeed = 0;
       } else {
         this.getNetSpeed();
         Filesystem.readdir({
@@ -125,55 +129,57 @@ export class HomeComponent {
           directory: Directory.Data
         }).then(data => {
           if (!(data.files.length > 0)) {
+            console.log("getSttusa lenght < 0 ", 12323);
             this.getBalance();
             this.getAccountInfo();
           }
           else {
             this.balance = localStorage.getItem('balance');
           }
-        }).catch(err => {
-          // console.log("here",err);
-
-          this.getBalance();
-          this.getAccountInfo();
         })
       }
     });
 
     Network.addListener('networkStatusChange', status => {
-      // this.getNetSpeed();
-      this.connectionStatus = status.connected;
-      if (this.connectionStatus) {
-        // setInterval(()=>{
-          this.getNetSpeed();
-        // },10000)
-        Filesystem.readdir({
-          path: '/outbound',
-          directory: Directory.Data
-        }).then(data => {
-          if (!(data.files.length > 0)) {
-            this.getBalance();
-            this.getAccountInfo();
-          }
-          else {
-            this.balance = localStorage.getItem('balance');
-          }
-        }).catch(err => {
-          // console.log("here",err);
-
-          this.getBalance();
-          this.getAccountInfo();
-        })
-        // this.getBalance();
-      }
-      else {
-        this.netSpeed =0;
-        this.balance = localStorage.getItem('balance');
-      }
+      setTimeout(() => {
+        this.connectionStatus = status.connected;
+        if (this.connectionStatus) {
+          // setInterval(()=>{
+          // this.getNetSpeed();
+          // },10000)
+  
+          setTimeout(() => {
+            this.getNetSpeed();
+          }, 2000);
+          Filesystem.readdir({
+            path: '/outbound',
+            directory: Directory.Data
+          }).then(data => {
+            if (!(data.files.length > 0)) {
+              this.getBalance();
+              this.getAccountInfo();
+            }
+            else {
+              this.balance = localStorage.getItem('balance');
+            }
+          }).catch(err => {
+            console.log("here",err);
+  
+            // this.getBalance();
+            // this.getAccountInfo();
+          })
+          // this.getBalance();
+        }
+        else {
+          this.netSpeed = 0;
+          this.balance = localStorage.getItem('balance');
+        }
+      }, 3000);
+     
     });
 
 
-   
+
     if (localStorage.getItem('mode')) this.mode = localStorage.getItem('mode');
     // if(!localStorage.getItem("bio")){
     //   this.performBiometricVerificatin.then((verified)=>{
@@ -198,101 +204,104 @@ export class HomeComponent {
     // }
     // this.getBalance();
   }
-  getBio() {
-    let performBiometricVerificatin = new Promise<any>((resolve, reject) => {
-
-      NativeBiometric.isAvailable().then(result => {
-        if (result) {
-          const isFaceID = result.biometryType == BiometryType.MULTIPLE;
-
-          NativeBiometric.verifyIdentity({
-            reason: "For easy log in",
-            title: "Log in",
-            subtitle: "Maybe add subtitle here?",
-            description: "Maybe a description too?",
-            useFallback: true,
-            maxAttempts: 3
-
-          }).then((res) => {
-            console.log(res, "res true");
-
-            resolve(true);
-            // return true
-          })
-            .catch((err) => {
-              console.log(err, "errr");
-              reject(err)
-              // return false
-            });
-        }
-        else {
-          reject('no bio')
-
-        }
-      })
-
-    })
-    return performBiometricVerificatin
+  nextTransactions() {
+    this.router.navigateByUrl('/home/loans')
   }
-  getNetSpeed(){
+  // getBio() {
+  //   let performBiometricVerificatin = new Promise<any>((resolve, reject) => {
+
+  //     NativeBiometric.isAvailable().then(result => {
+  //       if (result) {
+  //         const isFaceID = result.biometryType == BiometryType.MULTIPLE;
+
+  //         NativeBiometric.verifyIdentity({
+  //           reason: "For easy log in",
+  //           title: "Log in",
+  //           subtitle: "Maybe add subtitle here?",
+  //           description: "Maybe a description too?",
+  //           useFallback: true,
+  //           maxAttempts: 3
+
+  //         }).then((res) => {
+  //           console.log(res, "res true");
+
+  //           resolve(true);
+  //           // return true
+  //         })
+  //           .catch((err) => {
+  //             console.log(err, "errr");
+  //             reject(err)
+  //             // return false
+  //           });
+  //       }
+  //       else {
+  //         reject('no bio')
+
+  //       }
+  //     })
+
+  //   })
+  //   return performBiometricVerificatin
+  // }
+  getNetSpeed() {
     try {
       this.speedTestService.getKbps(
         {
-          iterations: 3,
-          retryDelay: 1500,
+          iterations: 1,
+          retryDelay: 10000,
         }
       ).subscribe(
         (speed) => {
-          this.netSpeed =speed;
+          this.netSpeed = speed;
           // console.log('Your speed is ' + speed);
         }
       )
     } catch (error) {
       console.log(error);
-      
+
     }
-   
+
   }
-  payLender(){
-    let tx =this.generateSignedTransaction(JSON.parse(this.sender).pSeed);
-    let seq = Number(localStorage.getItem('sequence')) +1
+  payLender() {
+    let tx = this.generateSignedTransaction(JSON.parse(this.sender).pSeed);
+    let seq = Number(localStorage.getItem('sequence')) + 1
     // const client = new xrpl.Client(this.net)
     // client.connect().then(conn => {
-      const standby_wallet = xrpl.Wallet.fromSeed(JSON.parse(this.sender).pSeed);  
-      console.log(standby_wallet,"wallet");
-      
-      // const operational_wallet = xrpl.Wallet.fromSeed(req.body.operationalSeedField)
-      // const sendAmount = req.body.standbyAmountField
-      // client.autofill({
-      //   "TransactionType": "Payment",
-      //   "Account": standby_wallet.address,
-      //   "Amount": xrpl.xrpToDrops(this.amount),
-      //   "Destination": JSON.parse(this.reciever).publicKey,
-      //   "Sequence":seq,
-      //   "LastLedgerSequence":99999999
-      // }).then(prepared => {
-        // console.log(prepared,"prepared");
-        const signed:any = this.generateSignedTransaction(JSON.parse(this.sender).pSeed)
-        // const  = standby_wallet.sign(prepared);
-        let crtDate = new Date();
-       
-        Filesystem.writeFile({
-          path: `outbound/${crtDate}|${JSON.stringify(this.reciever.mobile)}|'100'|'debit'|${JSON.stringify(JSON.parse(this.sender).mobile)}|'finace'.txt`,
-          data: `${signed.tx_blob}|${JSON.stringify(this.reciever.mobile)}|'100'|'debit'|${JSON.stringify(JSON.parse(this.sender).mobile)}`,
-          directory: Directory.Data,
-          encoding: Encoding.UTF8
-        }).then(data => {
-          localStorage.setItem('transaction', `${signed.tx_blob}|${JSON.stringify(this.reciever.mobile)}|'100'|'debit'|${JSON.stringify(JSON.parse(this.sender).mobile)}|'finance'`);
-          // writeFile(`../../../outbound/${crtDate}.json`, 'Hello content!',()=>{})
-          //need to implement balance reduction from localstorage
-          localStorage.setItem('sequence',JSON.stringify(seq));
-          let latestBalance =Number(localStorage.getItem('balance')) - 100
-          localStorage.setItem('balance',JSON.stringify(latestBalance) )
-          this.router.navigateByUrl('/qrCode')
-        })
+    const standby_wallet = xrpl.Wallet.fromSeed(JSON.parse(this.sender).pSeed);
+    console.log(standby_wallet, "wallet");
+
+    // const operational_wallet = xrpl.Wallet.fromSeed(req.body.operationalSeedField)
+    // const sendAmount = req.body.standbyAmountField
+    // client.autofill({
+    //   "TransactionType": "Payment",
+    //   "Account": standby_wallet.address,
+    //   "Amount": xrpl.xrpToDrops(this.amount),
+    //   "Destination": JSON.parse(this.reciever).publicKey,
+    //   "Sequence":seq,
+    //   "LastLedgerSequence":99999999
+    // }).then(prepared => {
+    // console.log(prepared,"prepared");
+    const signed: any = this.generateSignedTransaction(JSON.parse(this.sender).pSeed)
+    // const  = standby_wallet.sign(prepared);
+    let crtDate = new Date();
+
+    Filesystem.writeFile({
+      path: `outbound/${crtDate}|${JSON.stringify(this.reciever.mobile)}|'100'|'debit'|${JSON.stringify(JSON.parse(this.sender).mobile)}|'finace'.txt`,
+      data: `${signed.tx_blob}|${JSON.stringify(this.reciever.mobile)}|'100'|'debit'|${JSON.stringify(JSON.parse(this.sender).mobile)}`,
+      directory: Directory.Data,
+      encoding: Encoding.UTF8
+    }).then(data => {
+      localStorage.setItem('transaction', `${signed.tx_blob}|${JSON.stringify(this.reciever.mobile)}|'100'|'debit'|${JSON.stringify(JSON.parse(this.sender).mobile)}|'finance'`);
+      // writeFile(`../../../outbound/${crtDate}.json`, 'Hello content!',()=>{})
+      //need to implement balance reduction from localstorage
+      localStorage.setItem('sequence', JSON.stringify(seq));
+      let latestBalance = Number(localStorage.getItem('balance')) - 100
+      localStorage.setItem('balance', JSON.stringify(latestBalance))
+      this.router.navigateByUrl('/qrCode')
+    })
 
 
-    
+
   }
   onlineSend(btn: string) {
     if (!this.connectionStatus) {
@@ -344,13 +353,14 @@ export class HomeComponent {
       .catch(err => { Filesystem.mkdir({ path: 'inbound', directory: Directory.Data }) })
   }
   getBalance() {
-
+    this.bal = false;
     this.transationService.getBalance(JSON.parse(this.sender).pSeed).subscribe(data => {
       this.balance = Math.trunc(data.standby_balance);
       // if(localStorage.getItem('balance')){
 
       // }else{
       localStorage.setItem('balance', JSON.stringify(this.balance))
+      this.bal = true;
       // }
     })
   }
@@ -397,7 +407,7 @@ export class HomeComponent {
       this.sidebarVisible = false;
     }
   }
-  
+
 
   getAccountInfo() {
     this.transationService.getAccountInfo(JSON.parse(this.sender).publicKey).subscribe(res => {
@@ -407,12 +417,12 @@ export class HomeComponent {
   }
 
   syncOfflineTx() {
-    
+
     Filesystem.readdir({
       path: '/outbound',
       directory: Directory.Data
     }).then((data) => {
-      console.log(data,"outbound");
+      console.log(data, "outbound");
       if (!(data.files.length > 0)) {
         this.messageService.add({ severity: 'error', detail: 'There are No offline transactions to zync' });
         this.alertAudio.play();
@@ -463,23 +473,23 @@ export class HomeComponent {
       })
   }
 
-  offlineTx(tx:string){
+  offlineTx(tx: string) {
     Filesystem.readdir({
       path: '/outbound',
       directory: Directory.Data
-    }).then(data=>{
-      if(data.files.length > 0){
+    }).then(data => {
+      if (data.files.length > 0) {
         this.messageService.add({ severity: 'error', detail: 'Zync previous offline transaction before doing other.' });
         this.alertAudio.play();
-      }else{
-        if(tx == 'pay'){
+      } else {
+        if (tx == 'pay') {
           this.router.navigateByUrl('/qrCode/scanner')
-        }else if(tx == 'recieve'){
-          this.router.navigate(['/qrCode/scanner',{ recieve: 'txReciver' }])
+        } else if (tx == 'recieve') {
+          this.router.navigate(['/qrCode/scanner', { recieve: 'txReciver' }])
         }
       }
     })
-   
+
 
   }
 
@@ -488,45 +498,45 @@ export class HomeComponent {
   async getInbound() {
     let inBoundFiles = await Filesystem.readFile({
       path: 'inbound',
-      directory:Directory.Data
+      directory: Directory.Data
     })
     return inBoundFiles;
   }
 
-  generateSignedTransaction(pSeed:any){
-    
+  generateSignedTransaction(pSeed: any) {
+
 
     // Sample code demonstrating secure offline signing using xrpl.js library.
     const xrpl = require('xrpl')
-    
+
     // Load seed value from an environment variable:
     const standby_wallet = xrpl.Wallet.fromSeed(pSeed)
-    
+
     // For offline signing, you need to know your address's next Sequence number.
     // Alternatively, you could use a Ticket in place of the Sequence number.
     // This is useful when you need multiple signatures and may want to process transactions out-of-order.
     // For details, see: https://xrpl.org/tickets.html
     // let my_seq = 21404872
-    
+
     // Provide *all* required fields before signing a transaction
-    
-    let seq = Number(localStorage.getItem('sequence')) +1
+
+    let seq = Number(localStorage.getItem('sequence')) + 1
     const txJSON = {
       "Account": standby_wallet.address,
-      "TransactionType":"Payment",
-      "Destination":'rhMP1Pi7oMUrqBwosQbKFdrh8KVAkjiMPa',
-      "Amount":xrpl.xrpToDrops(100),
-      "Fee":"12",
-      "Flags":0,
+      "TransactionType": "Payment",
+      "Destination": 'rhMP1Pi7oMUrqBwosQbKFdrh8KVAkjiMPa',
+      "Amount": xrpl.xrpToDrops(100),
+      "Fee": "12",
+      "Flags": 0,
       "Sequence": seq,
-      "LastLedgerSequence":99999999, // Optional, but recommended.
-    }    
+      "LastLedgerSequence": 99999999, // Optional, but recommended.
+    }
     const signed = standby_wallet.sign(txJSON)
     return signed
-    
-    
-    
-    
-    
-      }
+
+
+
+
+
+  }
 }

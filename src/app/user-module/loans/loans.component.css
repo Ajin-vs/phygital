@@ -1,0 +1,49 @@
+
+.bg{
+    background-image: linear-gradient(to bottom, #1c9dd9, white);
+    /* filter: blur(4px); */
+}
+.filter-bg{
+     filter: blur(8px);
+}
+.crs{
+    cursor: pointer;
+}
+img {
+    /* filter: blur(4px); */
+    width:100%;
+    height:100%;
+}
+/* .qr{
+    z-index: 1;
+    top: 50%;
+    
+} */
+.icon-bg{
+    background-color: #1c9dd9;
+}
+@media screen and (max-width:576px) {
+    .pstyle {
+        height: 500px;
+        width: 100%;
+    }
+    .qr{
+        z-index: 1;
+        top: 50%;
+        left: 35%;
+    }
+}
+
+@media only screen and (min-width: 577px)  {
+    .pstyle {
+        width: 100%;
+        height: 600px;
+    }
+    .qr{
+        z-index: 1;
+        top: 50%;
+        left: 45%; 
+    }
+}
+
+

@@ -22,9 +22,7 @@ export class TransactionHistoryComponent {
     if(!localStorage.getItem('mode') || localStorage.getItem('mode') === 'Online'){
       this.mode ='Online'
       this.transactionService.getTxHistory(JSON.parse(this.sender).publicKey).subscribe(data => {
-        console.log(data);
         this.transactionDetails = data.message.result.transactions
-        console.log(this.transactionDetails);
         
       }, error => console.log('oops', error))
     }
@@ -32,11 +30,12 @@ export class TransactionHistoryComponent {
       this.transactionService.getOfflineTransactionHs.subscribe((data:any)=>{
         data.map((tx:any)=>{
           let name = JSON.stringify(tx.name).split("|");
-          // console.log(name[],"d");
+          console.log(name[4].slice(4,10));
+          
           if(name[5] === undefined){
             let tr ={
               date:name[0],
-              mobile:name[1]==JSON.parse(this.sender).mobile? name[4]:name[1],
+              mobile:name[1].includes(JSON.parse(this.sender).mobile) ? name[4].slice(0,10):name[1].slice(2,12),
               amount:name[2],
               type: name[3].includes('debit')? 'debit':'credit'
             }
@@ -57,7 +56,7 @@ export class TransactionHistoryComponent {
         data.map((tx:any)=>{
           let name = JSON.stringify(tx.name).split("|");
           // console.log(name[],"d");
-          if(name[5] !== undefined){
+          if(name[5] !== undefined && name[5] == 'finance'){
             let tr ={
               date:name[0],
               // mobile:name[1]==JSON.parse(this.sender).mobile? name[4]:name[1],

@@ -4,12 +4,15 @@
 
     </div>
 <div class="mode == 'Offline'">
+    <div *ngIf="offlineTransaction.length == 0 && (mode == 'Offline' || mode == 'MicroFinance')" class="mt-5 text-center">
+        <h5>No Transaction History</h5>
+    </div>
     <div *ngFor="let a of offlineTransaction"  class="row "> 
         <div class="mt-5 col-2">
-            <span class="p-3 rounded rounded-5 icon-bg">Av</span>
+            <span class="p-3 rounded rounded-5 icon-bg"><i class="pi pi-user"></i> </span>
         </div>
         <div class=" mt-5 text-start col-6">
-            <strong >{{a.mobile | slice:0:12}}</strong>
+            <strong >{{a.mobile }}</strong>
            
             <p>{{a.date | slice:1:25 }}</p>
         </div>
@@ -30,7 +33,7 @@
 
             
             <div class="mt-5 col-2">
-                <span class="p-3 rounded rounded-5 icon-bg">AV</span>
+                <span class="p-3 rounded rounded-5 icon-bg"> <i class="pi pi-user"></i></span>
             </div>
             <div class=" mt-5 text-start col-6">
                
