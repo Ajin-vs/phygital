@@ -9,6 +9,9 @@ import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { AppserviceService } from 'src/app/appservice.service';
 import { SpeedTestService } from 'ng-speed-test';
+import { ConnectionService, ConnectionServiceOptions, ConnectionState } from 'ng-connection-service';
+import { Subscription, tap } from 'rxjs';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -33,7 +36,11 @@ export class HomeComponent {
   netSpeed = 0;
   firstName: any;
   bal: boolean = true;
-  constructor(private speedTestService: SpeedTestService, private transationService: TransactionServiceService, private appService: AppserviceService, private messageService: MessageService, private router: Router) {
+  status!: string;
+  currentState!: ConnectionState;
+  subscription = new Subscription();
+
+  constructor(private connectionService: ConnectionService,private speedTestService: SpeedTestService, private transationService: TransactionServiceService, private appService: AppserviceService, private messageService: MessageService, private router: Router) {
 
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
@@ -48,6 +55,49 @@ export class HomeComponent {
     this.sender = localStorage.getItem('sender');
     this.firstName = JSON.parse(this.sender).firstName
     this.generateDirectory();
+
+    this.subscription.add(
+      this.connectionService.monitor().pipe(
+        tap((newState: ConnectionState) => {
+          this.currentState = newState;
+
+          if (this.currentState.hasNetworkConnection) {
+            this.status = 'ONLINE';
+            this.connectionStatus = true;
+            console.log(this.status);
+            this.getNetSpeed();
+            // },10000)
+            Filesystem.readdir({
+              path: '/outbound',
+              directory: Directory.Data
+            }).then(data => {
+              if (!(data.files.length > 0)) {
+                this.getBalance();
+                this.getAccountInfo();
+              }
+              else {
+                this.balance = localStorage.getItem('balance');
+              }
+            }).catch(err => {
+              // console.log("here",err);
+    
+              this.getBalance();
+              this.getAccountInfo();
+            })
+            
+          } else {
+            this.status = 'OFFLINE';
+            console.log(this.status);
+            this.connectionStatus = false;
+            this.netSpeed = 0;
+            this.balance = localStorage.getItem('balance');
+
+          }
+        })
+      ).subscribe()
+    );
+    
+    
 
     // orginal starts here
     // if (!this.appService.bio) {
@@ -140,43 +190,39 @@ export class HomeComponent {
       }
     });
 
-    Network.addListener('networkStatusChange', status => {
-      setTimeout(() => {
-        this.connectionStatus = status.connected;
-        if (this.connectionStatus) {
-          // setInterval(()=>{
-          // this.getNetSpeed();
-          // },10000)
-  
-          setTimeout(() => {
-            this.getNetSpeed();
-          }, 2000);
-          Filesystem.readdir({
-            path: '/outbound',
-            directory: Directory.Data
-          }).then(data => {
-            if (!(data.files.length > 0)) {
-              this.getBalance();
-              this.getAccountInfo();
-            }
-            else {
-              this.balance = localStorage.getItem('balance');
-            }
-          }).catch(err => {
-            console.log("here",err);
-  
-            // this.getBalance();
-            // this.getAccountInfo();
-          })
-          // this.getBalance();
-        }
-        else {
-          this.netSpeed = 0;
-          this.balance = localStorage.getItem('balance');
-        }
-      }, 3000);
-     
-    });
+    // Network.addListener('networkStatusChange', status => {
+    //   console.log("inside networkStatus Change", 12323);
+
+    //   // this.getNetSpeed();
+    //   this.connectionStatus = status.connected;
+    //   if (this.connectionStatus) {
+    //     // setInterval(()=>{
+    //     this.getNetSpeed();
+    //     // },10000)
+    //     Filesystem.readdir({
+    //       path: '/outbound',
+    //       directory: Directory.Data
+    //     }).then(data => {
+    //       if (!(data.files.length > 0)) {
+    //         this.getBalance();
+    //         this.getAccountInfo();
+    //       }
+    //       else {
+    //         this.balance = localStorage.getItem('balance');
+    //       }
+    //     }).catch(err => {
+    //       // console.log("here",err);
+
+    //       this.getBalance();
+    //       this.getAccountInfo();
+    //     })
+    //     // this.getBalance();
+    //   }
+    //   else {
+    //     this.netSpeed = 0;
+    //     this.balance = localStorage.getItem('balance');
+    //   }
+    // });
 
 
 
@@ -538,5 +584,8 @@ export class HomeComponent {
 
 
 
+  }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }
