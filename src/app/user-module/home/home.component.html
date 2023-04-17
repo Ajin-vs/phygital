@@ -1,4 +1,4 @@
-<div class="bg p-3 ">
+<div class="p-3 ">
     <div class="container">
         <p-toast position="center"></p-toast>
     </div>
@@ -12,29 +12,35 @@
     </div> -->
     <div class="">
 
-        <!-- <p-sidebar [(visible)]="sidebarVisible">
+        <p-sidebar [(visible)]="sidebarVisible">
             <div class="d-flex justify-content-around mt-5">
                 <strong >Loan Agent</strong>
                 <p-inputSwitch (click)="changeTog()" [(ngModel)]="checked"></p-inputSwitch>
             </div>
            
-        </p-sidebar> -->
+        </p-sidebar>
     </div>
 
     <i class="pi pi-user rounded rounded-5 shadow bg-success text-light p-3 mb-3"
-        [ngClass]="(mode=='MicroFinance') ? 'crs' : null" style="font-size: 1.5rem" (click)="sidebarVisibility()">
+        style="font-size: 1.5rem" (click)="sidebarVisibility()">
     </i>
-    <strong class="ms-3 fs-2">{{firstName | slice: 0:5}}</strong>
+    <!-- <strong class="ms-3 fs-2">{{firstName | slice: 0:5}}</strong> -->
 
-    <span class="float-end">
+    <span class="float-end text-light mt-3">
         <!-- {{netSpeed}} -->
 
-        <i class="pi pi-circle-fill ms-3 crs " [ngClass]="netSpeed >= 450 ? 'text-success':'text-danger'"
-            style="font-size: 1.5rem"></i>
+        <!-- <i class="pi pi-circle-fill ms-3 crs " [ngClass]="netSpeed >= 450 ? 'text-success':'text-danger'"
+            style="font-size: 1.5rem"></i> -->
 
+
+        <!-- <i class="pi pi-sign-out rounded rounded-5   text-dark p-3 mb-3 ms-1" style="font-size: 1.5rem"></i> -->
+        <span >
+            <i class="pi pi-sync ms-3 crs " *ngIf="mode == 'Online' || mode == 'MicroFinance' " style="font-size: 1.5rem" [ngClass]=" spinner ?'pi-spin':null" (click)="syncOfflineTx()"></i>
+            <i class="pi pi-qrcode ms-3 crs"  (click)="onlineSend('scanner')" *ngIf="mode == 'Online'" style="font-size: 1.5rem" ></i>
+    
+        </span>
+       
         <i class="pi pi-bell ms-3 crs" style="font-size: 1.5rem" (click)="op.toggle($event)" pBadge value="0"></i>
-
-        <i class="pi pi-sign-out rounded rounded-5   text-dark p-3 mb-3 ms-1" style="font-size: 1.5rem"></i>
 
     </span>
 
@@ -171,7 +177,8 @@
             </div>
         </div>
         <div class="">
-            <div class="pt-4 text-center" *ngIf="mode == 'Online'">
+            <!-- previous buttons in online mode -->
+            <!-- <div class="pt-4 text-center" *ngIf="mode == 'Online'">
                 <button class="crs shadow p-4 border border-primary icon-bg rounded rounded-2"
                     (click)="onlineSend('scanner')"> <i class="pi pi-qrcode p-1" style="font-size: 1.5rem"></i></button>
 
@@ -180,7 +187,7 @@
                         class="pi pi-sync p-1 " [ngClass]=" spinner ?'pi-spin':null" style="font-size: 1.5rem"
                         aria-placeholder="tool"></i></button>
 
-            </div>
+            </div> -->
 
 
             <div class="mb-5 mt-5" *ngIf="mode == 'MicroFinance'">

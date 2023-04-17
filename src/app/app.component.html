@@ -1,1 +1,3 @@
-<router-outlet></router-outlet>
+<div [ngClass]="netSpeed >= 450 ? 'bg-online':( netSpeed > 0 && netSpeed < 450 )  ?  'bg-strength':'bg-offline'">
+    <router-outlet></router-outlet>
+</div>

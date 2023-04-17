@@ -1,0 +1,13 @@
+.bg-online {
+    background-image: linear-gradient(to bottom, #1c9dd9, white);
+    /* filter: blur(4px); */
+}
+.bg-offline {
+    background-image: linear-gradient(to bottom, grey, white);
+    /* filter: blur(4px); */
+}
+
+.bg-strength {
+    background-image: linear-gradient(to bottom, orange, white);
+    /* filter: blur(4px); */
+}

@@ -33,7 +33,7 @@ export class HomeComponent {
   reciever = { mobile: 9654331234 }
   audio = new Audio("../../../assets/audio/success-1-6297.mp3");
   alertAudio = new Audio("../../../assets/audio/error-call-to-attention-129258.mp3");
-  netSpeed = 0;
+  // netSpeed = 0;
   firstName: any;
   bal: boolean = true;
   status!: string;
@@ -89,7 +89,8 @@ export class HomeComponent {
             this.status = 'OFFLINE';
             console.log(this.status);
             this.connectionStatus = false;
-            this.netSpeed = 0;
+            // this.netSpeed = 0;
+            this.appService.netSpeed.next(0)
             this.balance = localStorage.getItem('balance');
 
           }
@@ -171,7 +172,8 @@ export class HomeComponent {
       this.connectionStatus = status.connected
       if (!this.connectionStatus) {
         this.balance = localStorage.getItem('balance');
-        this.netSpeed = 0;
+        // this.netSpeed = 0;
+        this.appService.netSpeed.next(0)
       } else {
         this.getNetSpeed();
         Filesystem.readdir({
@@ -298,7 +300,8 @@ export class HomeComponent {
         }
       ).subscribe(
         (speed) => {
-          this.netSpeed = speed;
+          // this.netSpeed = speed;
+          this.appService.netSpeed.next(speed)
           // console.log('Your speed is ' + speed);
         }
       )
@@ -446,12 +449,12 @@ export class HomeComponent {
 
 
   sidebarVisibility() {
-    if (this.mode === 'MicroFinance') {
+    // if (this.mode === 'MicroFinance') {
       this.sidebarVisible = true;
-    }
-    else {
-      this.sidebarVisible = false;
-    }
+    // }
+    // else {
+    //   this.sidebarVisible = false;
+    // }
   }
 
 

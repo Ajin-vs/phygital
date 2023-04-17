@@ -11,8 +11,8 @@ import { AppserviceService } from './appservice.service';
 export class AppComponent {
   title = 'phygital_ui';
   backEvent = 0;
-
-  constructor(private router: Router,private appService: AppserviceService) {
+  netSpeed =0;
+  constructor(private router: Router, private appService: AppserviceService) {
 
     App.addListener('backButton', () => {
 
@@ -29,20 +29,20 @@ export class AppComponent {
           this.backEvent = 0;
         }, 2000);
         if (this.backEvent == 2) {
-          appService.bio=false;
+          appService.bio = false;
           localStorage.removeItem("bio");
           App.exitApp();
         }
-      }else if (this.router.url.includes('/qrCode')){
+      } else if (this.router.url.includes('/qrCode')) {
         router.navigate(['/home'])
       }
-      else{
+      else {
         window.history.back();
       }
 
 
       // if (this.backEvent !== 2) {
-       
+
       // }
 
     })
@@ -53,14 +53,18 @@ export class AppComponent {
     //   localStorage.removeItem("bio");
     // })
 
- App.addListener('appStateChange', (res) => {
-  if(!res.isActive){
-    appService.bio=false;
-    localStorage.removeItem("bio");
-  }
-   
+    App.addListener('appStateChange', (res) => {
+      if (!res.isActive) {
+        appService.bio = false;
+        localStorage.removeItem("bio");
+      }
+
     })
 
+    appService.netSpeed.subscribe(speed => {
+      console.log(speed, "inservice");
+      this.netSpeed = speed
+    })
   }
 
 
