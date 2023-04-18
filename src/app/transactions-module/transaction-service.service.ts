@@ -8,6 +8,7 @@ import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 })
 export class TransactionServiceService {
   public domain ='http://mvp-phygital-wallet.ap-south-1.elasticbeanstalk.com'
+  public customerDomain ='http://mvp-phygital-customer.ap-south-1.elasticbeanstalk.com'
   constructor(public httpClient: HttpClient) { }
 
   public getUser(number:number):Observable<any>{
@@ -49,6 +50,10 @@ export class TransactionServiceService {
   }
   public sign():Observable<any>{
     return this.httpClient.get(this.domain +'/sign')
+  }
+
+  public getAllUsers():Observable<any>{
+    return this.httpClient.get(this.customerDomain+'/api/mvp/customer/users')
   }
 
   getOfflineTransactionHs= new Observable((observer)=>{

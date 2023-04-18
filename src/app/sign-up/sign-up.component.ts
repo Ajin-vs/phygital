@@ -41,6 +41,7 @@ export class SignUpComponent {
           localStorage.setItem('isUserLoggedIn', true ? "true" : "false"); 
           let sender ={
             mobile:this.signUpForm.controls['mobile'].value,
+            userId:acct.userId,
             pSeed:res.my_wallet.seed,
             publicKey:res.my_wallet.classicAddress,
             firstName:this.signUpForm.controls['firstName'].value,

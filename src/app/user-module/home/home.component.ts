@@ -35,11 +35,12 @@ export class HomeComponent {
   alertAudio = new Audio("../../../assets/audio/error-call-to-attention-129258.mp3");
   // netSpeed = 0;
   firstName: any;
+  lastName:any;
   bal: boolean = true;
   status!: string;
   currentState!: ConnectionState;
   subscription = new Subscription();
-
+mobile:any
   constructor(private connectionService: ConnectionService,private speedTestService: SpeedTestService, private transationService: TransactionServiceService, private appService: AppserviceService, private messageService: MessageService, private router: Router) {
 
     this.justifyOptions = [
@@ -54,6 +55,8 @@ export class HomeComponent {
   ngOnInit() {
     this.sender = localStorage.getItem('sender');
     this.firstName = JSON.parse(this.sender).firstName
+    this.lastName = JSON.parse(this.sender).lastName
+    this.mobile = JSON.parse(this.sender).mobile
     this.generateDirectory();
 
     this.subscription.add(
