@@ -5,6 +5,7 @@ import { TransactionServiceService } from 'src/app/transactions-module/transacti
 import { ConnectionService, ConnectionServiceOptions, ConnectionState } from 'ng-connection-service';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import * as xrpl from 'xrpl'
+import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-loans',
   templateUrl: './loans.component.html',
@@ -23,13 +24,15 @@ export class LoansComponent {
   public connectionStatus: boolean = false;
   status!: string;
   currentState!: ConnectionState;
+  alertAudio = new Audio("../../../assets/audio/error-call-to-attention-129258.mp3");
+
   mfc ={
     mobile: 9400501678,
     mFPublickKey :'rseguVwgWkLTGoAw8HMqvvQ1G3ZZNRGKKZ'
 
   }
   sender: any = localStorage.getItem('sender')
-  constructor(private connectionService: ConnectionService,private router : Router, private transactionService: TransactionServiceService,   private route: ActivatedRoute){
+  constructor(private messageService: MessageService,private connectionService: ConnectionService,private router : Router, private transactionService: TransactionServiceService,   private route: ActivatedRoute){
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
       { label: 'OFF', value: 'Offline' },
@@ -97,23 +100,22 @@ export class LoansComponent {
     console.log(method,ind);
     // let newDt = [...this.loanrepaymenthistory]
     if(method == null){
-      let seq = Number(localStorage.getItem('sequence')) +1
-      // const client = new xrpl.Client(this.net)
-      // client.connect().then(conn => {
-      const standby_wallet = xrpl.Wallet.fromSeed(JSON.parse(this.sender).pSeed);  
-      const signed:any = this.generateSignedTransaction(JSON.parse(this.sender).pSeed,amt)
-      // const  = standby_wallet.sign(prepared);
-      let crtDate = new Date();
-      this.loanrepaymenthistory[ind].paymentMode = 'offline'
-      Filesystem.writeFile({
-        path: `loanData/${this.loanId}.txt`,
-        data: this.loanrepaymenthistory,
-        directory: Directory.Data,
-        encoding: Encoding.UTF8
-      }).then(()=>{
-
-      })
-      // let trx = `${signed.tx_blob|${}}`
+      if(Number (localStorage.getItem('balance'))< amt){
+        console.log("insuffient balance");
+        this.messageService.add({ severity: 'error', detail: 'No internet connection.' });
+        this.alertAudio.play();
+        
+      }
+      else{
+        let seq = Number(localStorage.getItem('sequence')) +1
+        // const client = new xrpl.Client(this.net)
+        // client.connect().then(conn => {
+        const standby_wallet = xrpl.Wallet.fromSeed(JSON.parse(this.sender).pSeed);  
+        const signed:any = this.generateSignedTransaction(JSON.parse(this.sender).pSeed,amt)
+        // const  = standby_wallet.sign(prepared);
+        let crtDate = new Date();
+      
+        // / let trx = `${signed.tx_blob|${}}`
       // localStorage.setItem('transaction', `${signed.tx_blob}|${}`);
       Filesystem.writeFile({
         path: `outbound/${crtDate}|${this.mfc.mobile}|${amt}|${JSON.parse(this.sender).mobile}|'finance' | .txt`,
@@ -125,8 +127,20 @@ export class LoansComponent {
         localStorage.setItem('sequence',JSON.stringify(seq));
         let latestBalance =Number(localStorage.getItem('balance')) - amt
         localStorage.setItem('balance',JSON.stringify(latestBalance) )
+        this.loanrepaymenthistory[ind].paymentMode = 'offline'
+        Filesystem.writeFile({
+          path: `loanData/${this.loanId}.txt`,
+          data: this.loanrepaymenthistory,
+          directory: Directory.Data,
+          encoding: Encoding.UTF8
+        }).then(()=>{
+  
+        })
         this.router.navigateByUrl('/qrCode')
       })
+      }
+     
+      
     }
    else{
     // alert( "already paid")
