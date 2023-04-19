@@ -1,4 +1,4 @@
-<div class="p-3 ">
+<div class="p-3 pb-5">
     <div class="container">
         <p-toast position="center"></p-toast>
     </div>
@@ -209,12 +209,14 @@
                         <tr>
                             <th scope="col">Loans</th>
                             <th scope="col">Total Amount</th>
+                            <th>Active</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="text-primary" (click)="nextTransactions()">MFC-1</td>
-                            <td>20000</td>
+                        <tr *ngFor="let loan of loans">
+                            <td class="text-primary" (click)="nextTransactions(loan.loanId)">MFC-1</td>
+                            <td>{{loan.loanAmount}}</td>
+                            <td>{{loan.loanStatus}}</td>
                         </tr>
 
                     </tbody>

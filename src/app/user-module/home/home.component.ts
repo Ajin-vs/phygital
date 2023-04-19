@@ -35,13 +35,14 @@ export class HomeComponent {
   alertAudio = new Audio("../../../assets/audio/error-call-to-attention-129258.mp3");
   // netSpeed = 0;
   firstName: any;
-  lastName:any;
+  lastName: any;
   bal: boolean = true;
   status!: string;
   currentState!: ConnectionState;
   subscription = new Subscription();
-mobile:any
-  constructor(private connectionService: ConnectionService,private speedTestService: SpeedTestService, private transationService: TransactionServiceService, private appService: AppserviceService, private messageService: MessageService, private router: Router) {
+  mobile: any;
+  loans: any[] = []
+  constructor(private connectionService: ConnectionService, private speedTestService: SpeedTestService, private transationService: TransactionServiceService, private appService: AppserviceService, private messageService: MessageService, private router: Router) {
 
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
@@ -53,6 +54,7 @@ mobile:any
   }
 
   ngOnInit() {
+    if (localStorage.getItem('mode')) this.mode = localStorage.getItem('mode');
     this.sender = localStorage.getItem('sender');
     this.firstName = JSON.parse(this.sender).firstName
     this.lastName = JSON.parse(this.sender).lastName
@@ -67,7 +69,9 @@ mobile:any
           if (this.currentState.hasNetworkConnection) {
             this.status = 'ONLINE';
             this.connectionStatus = true;
-            console.log(this.status);
+
+           
+
             this.getNetSpeed();
             // },10000)
             Filesystem.readdir({
@@ -83,11 +87,37 @@ mobile:any
               }
             }).catch(err => {
               // console.log("here",err);
-    
+
               this.getBalance();
               this.getAccountInfo();
+            });
+
+            Filesystem.readdir({
+              path: '/inbound',
+              directory: Directory.Data
+            }).then(data => {
+              if (!(data.files.length > 0)) {
+                // this.getBalance();
+                // this.getAccountInfo();
+                this.transationService.getLoanInfo(JSON.parse(this.sender).userId).subscribe(loans => {
+                  // console.log(loans);
+                  this.loans = loans;
+                  localStorage.setItem('loans',JSON.stringify(this.loans))
+                })
+    
+              }
+              else {
+                let lo:any = localStorage.getItem('loans');
+                this.loans =JSON.parse(lo)
+                // this.balance = localStorage.getItem('balance');
+              }
+            }).catch(err => {
+              // console.log("here",err);
+
+              // this.getBalance();
+              // this.getAccountInfo();
             })
-            
+
           } else {
             this.status = 'OFFLINE';
             console.log(this.status);
@@ -95,13 +125,14 @@ mobile:any
             // this.netSpeed = 0;
             this.appService.netSpeed.next(0)
             this.balance = localStorage.getItem('balance');
-
+            let lo:any = localStorage.getItem('loans');
+            this.loans =JSON.parse(lo)
           }
         })
       ).subscribe()
     );
-    
-    
+
+
 
     // orginal starts here
     // if (!this.appService.bio) {
@@ -195,68 +226,11 @@ mobile:any
       }
     });
 
-    // Network.addListener('networkStatusChange', status => {
-    //   console.log("inside networkStatus Change", 12323);
-
-    //   // this.getNetSpeed();
-    //   this.connectionStatus = status.connected;
-    //   if (this.connectionStatus) {
-    //     // setInterval(()=>{
-    //     this.getNetSpeed();
-    //     // },10000)
-    //     Filesystem.readdir({
-    //       path: '/outbound',
-    //       directory: Directory.Data
-    //     }).then(data => {
-    //       if (!(data.files.length > 0)) {
-    //         this.getBalance();
-    //         this.getAccountInfo();
-    //       }
-    //       else {
-    //         this.balance = localStorage.getItem('balance');
-    //       }
-    //     }).catch(err => {
-    //       // console.log("here",err);
-
-    //       this.getBalance();
-    //       this.getAccountInfo();
-    //     })
-    //     // this.getBalance();
-    //   }
-    //   else {
-    //     this.netSpeed = 0;
-    //     this.balance = localStorage.getItem('balance');
-    //   }
-    // });
-
-
-
-    if (localStorage.getItem('mode')) this.mode = localStorage.getItem('mode');
-    // if(!localStorage.getItem("bio")){
-    //   this.performBiometricVerificatin.then((verified)=>{
-    //     localStorage.setItem('bio','true')
-    //     console.log(verified,"verified");
-    //   }).catch((err)=>{
-    //     console.log("internal err",err);
-
-    //     if(err.includes( 'Verification error')){
-    //       this.performBiometricVerificatin.then((verified)=>{
-    //         localStorage.setItem('bio','true')
-    //       }).catch(err=>{
-
-    //         if(err.includes('Verification error')){
-    //           App.exitApp();
-    //         }
-    //       })
-    //     }
-    //     // Authentication failed
-    //   })
-
-    // }
-    // this.getBalance();
   }
-  nextTransactions() {
-    this.router.navigateByUrl('/home/loans')
+  nextTransactions(loanId:any) {
+    this.router.navigate(['/home/loans',{loanId:loanId}])
+    // this.router.navigate(['/home/loans'], { queryParams: { loanId: loanId } });
+ 
   }
   // getBio() {
   //   let performBiometricVerificatin = new Promise<any>((resolve, reject) => {
@@ -296,6 +270,8 @@ mobile:any
   // }
   getNetSpeed() {
     try {
+      console.log("here");
+      
       this.speedTestService.getKbps(
         {
           iterations: 1,
@@ -403,6 +379,12 @@ mobile:any
       directory: Directory.Data
     }).then(data => { })
       .catch(err => { Filesystem.mkdir({ path: 'inbound', directory: Directory.Data }) })
+
+      Filesystem.readdir({
+        path: 'loanData',
+        directory: Directory.Data
+      }).then(data => { })
+        .catch(err => { Filesystem.mkdir({ path: 'loanData', directory: Directory.Data }) })
   }
   getBalance() {
     this.bal = false;
@@ -453,7 +435,7 @@ mobile:any
 
   sidebarVisibility() {
     // if (this.mode === 'MicroFinance') {
-      this.sidebarVisible = true;
+    this.sidebarVisible = true;
     // }
     // else {
     //   this.sidebarVisible = false;

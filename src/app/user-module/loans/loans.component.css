@@ -22,6 +22,9 @@ img {
 .icon-bg{
     background-color: #1c9dd9;
 }
+.text-paidOffline{
+    color: rgb(233, 237, 33)
+}
 @media screen and (max-width:576px) {
     .pstyle {
         height: 500px;

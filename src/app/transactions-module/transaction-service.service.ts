@@ -56,6 +56,14 @@ export class TransactionServiceService {
     return this.httpClient.get(this.customerDomain+'/api/mvp/customer/users')
   }
 
+  public getLoanInfo(userId:any):Observable<any>{
+    return this.httpClient.get(this.customerDomain + `/api/mvp/loan/loans/${userId}`)
+  }
+
+  public getLoanTenure(loanId:any):Observable<any>{
+    return this.httpClient.get(this.customerDomain + `/api/mvp/loan/loanrepaymenthistory/${loanId}`)
+  }
+
   getOfflineTransactionHs= new Observable((observer)=>{
     Filesystem.readdir({path:'outbound',directory:Directory.Data}).then(res=>{
       observer.next(res.files);

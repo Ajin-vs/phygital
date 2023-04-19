@@ -15,6 +15,7 @@ import { BlockChainCrudComponent } from './block-chain/block-chain-crud/block-ch
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BlockUIModule } from 'primeng/blockui';
 import { ToastModule } from 'primeng/toast';
+import { SpeedTestModule } from 'ng-speed-test';
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,7 +37,7 @@ import { ToastModule } from 'primeng/toast';
     ReactiveFormsModule,
     BlockUIModule,
     ToastModule,
-    
+    SpeedTestModule
   ],
   providers: [],
   bootstrap: [AppComponent]

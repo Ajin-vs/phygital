@@ -53,10 +53,15 @@ export class TransactionHistoryComponent {
     }
     else if(this.mode === 'MicroFinance'){
       this.transactionService.getOfflineTransactionHs.subscribe((data:any)=>{
+
         data.map((tx:any)=>{
+          console.log(data,"finance");
+          
           let name = JSON.stringify(tx.name).split("|");
+          console.log(name,"name of file");
+          
           // console.log(name[],"d");
-          if(name[5] !== undefined && name[5] == 'finance'){
+          if(name[4] !== undefined && name[4].includes('finance')){
             let tr ={
               date:name[0],
               // mobile:name[1]==JSON.parse(this.sender).mobile? name[4]:name[1],
