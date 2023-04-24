@@ -43,7 +43,7 @@ export class LoansComponent {
   ngOnInit(){
     this.loanDetails =JSON.parse(this.loans)
     this.loanId = this.route.snapshot.paramMap.get('loanId');
-
+    localStorage.setItem('loanId',this.loanId)
     this.subscription.add(
       this.connectionService.monitor().pipe(
         tap((newState: ConnectionState) => {
@@ -102,7 +102,7 @@ export class LoansComponent {
     if(method == null){
       if(Number (localStorage.getItem('balance'))< amt){
         console.log("insuffient balance");
-        this.messageService.add({ severity: 'error', detail: 'No internet connection.' });
+        this.messageService.add({ severity: 'error', detail: 'Insuffient balance.' });
         this.alertAudio.play();
         
       }

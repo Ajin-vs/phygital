@@ -27,11 +27,11 @@
             <td >{{ getDate(loanDetails[0].startDate,ind) | date | slice : 0:11}}</td>
         
             <td>{{loanhistory.id.scheduledEmi}}</td>
-            <td (click)="paid(loanhistory.paymentMode,ind,loanhistory.id.scheduledEmi)"><i class="pi" style="font-size: 1.5 rem;" [ngClass]="(loanhistory.paymentMode !== 'offline' && loanhistory.paymentMode !== 'online') ?'pi-qrcode ' :'pi-check-circle text-success'" ></i></td>
+            <td (click)="paid(loanhistory.paymentMode,ind,loanhistory.id.scheduledEmi)"><i class="pi" style="font-size: 1.5 rem;" [ngClass]="(loanhistory.paymentMode !== 'offline' && loanhistory.paymentMode !== 'CBDC') ?'pi-qrcode ' :'pi-check-circle text-success'" ></i></td>
             <td *ngIf="loanhistory.paymentMode == null && getDate(loanDetails[0].startDate,ind) < crtDate"><strong class="text-danger">DUE</strong> </td>
             <td *ngIf="loanhistory.paymentMode == null && getDate(loanDetails[0].startDate,ind) > crtDate"><strong class="text-primary">PAY</strong> </td>
             <td *ngIf="loanhistory.paymentMode == 'offline'"><strong class="text-paidOffline">PAID OFFLINE</strong> </td>
-            <td *ngIf="loanhistory.paymentMode == 'online'"><strong class="text-success">PAID</strong> </td>
+            <td *ngIf="loanhistory.paymentMode == 'CBDC'"><strong class="text-success">PAID</strong> </td>
         </tr>
        
         

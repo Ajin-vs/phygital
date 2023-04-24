@@ -8,11 +8,11 @@ import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 })
 export class TransactionServiceService {
   public domain ='http://mvp-phygital-wallet.ap-south-1.elasticbeanstalk.com'
-  public customerDomain ='http://mvp-phygital-customer.ap-south-1.elasticbeanstalk.com'
+  public customerDomain ='http://15.206.203.178:8080'
   constructor(public httpClient: HttpClient) { }
 
   public getUser(number:number):Observable<any>{
-    return this.httpClient.get('http://mvp-phygital-customer.ap-south-1.elasticbeanstalk.com/api/mvp/customer/user/'+number )
+    return this.httpClient.get(this.customerDomain+'/api/mvp/customer/user/'+number )
   }
 
   public validatePin(mobile:number,cbdcPin:number):Observable<any>{
@@ -62,6 +62,10 @@ export class TransactionServiceService {
 
   public getLoanTenure(loanId:any):Observable<any>{
     return this.httpClient.get(this.customerDomain + `/api/mvp/loan/loanrepaymenthistory/${loanId}`)
+  }
+
+  public payEmi(loanDetails:any):Observable<any>{
+    return this.httpClient.post(this.customerDomain+'/api/mvp/loan/repayment',loanDetails)
   }
 
   getOfflineTransactionHs= new Observable((observer)=>{

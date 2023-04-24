@@ -70,7 +70,7 @@ export class HomeComponent {
             this.status = 'ONLINE';
             this.connectionStatus = true;
 
-           
+
 
             this.getNetSpeed();
             // },10000)
@@ -102,13 +102,13 @@ export class HomeComponent {
                 this.transationService.getLoanInfo(JSON.parse(this.sender).userId).subscribe(loans => {
                   // console.log(loans);
                   this.loans = loans;
-                  localStorage.setItem('loans',JSON.stringify(this.loans))
+                  localStorage.setItem('loans', JSON.stringify(this.loans))
                 })
-    
+
               }
               else {
-                let lo:any = localStorage.getItem('loans');
-                this.loans =JSON.parse(lo)
+                let lo: any = localStorage.getItem('loans');
+                this.loans = JSON.parse(lo)
                 // this.balance = localStorage.getItem('balance');
               }
             }).catch(err => {
@@ -125,8 +125,8 @@ export class HomeComponent {
             // this.netSpeed = 0;
             this.appService.netSpeed.next(0)
             this.balance = localStorage.getItem('balance');
-            let lo:any = localStorage.getItem('loans');
-            this.loans =JSON.parse(lo)
+            let lo: any = localStorage.getItem('loans');
+            this.loans = JSON.parse(lo)
           }
         })
       ).subscribe()
@@ -227,10 +227,10 @@ export class HomeComponent {
     });
 
   }
-  nextTransactions(loanId:any) {
-    this.router.navigate(['/home/loans',{loanId:loanId}])
+  nextTransactions(loanId: any) {
+    this.router.navigate(['/home/loans', { loanId: loanId }])
     // this.router.navigate(['/home/loans'], { queryParams: { loanId: loanId } });
- 
+
   }
   // getBio() {
   //   let performBiometricVerificatin = new Promise<any>((resolve, reject) => {
@@ -271,7 +271,7 @@ export class HomeComponent {
   getNetSpeed() {
     try {
       console.log("here");
-      
+
       this.speedTestService.getKbps(
         {
           iterations: 1,
@@ -380,11 +380,11 @@ export class HomeComponent {
     }).then(data => { })
       .catch(err => { Filesystem.mkdir({ path: 'inbound', directory: Directory.Data }) })
 
-      Filesystem.readdir({
-        path: 'loanData',
-        directory: Directory.Data
-      }).then(data => { })
-        .catch(err => { Filesystem.mkdir({ path: 'loanData', directory: Directory.Data }) })
+    Filesystem.readdir({
+      path: 'loanData',
+      directory: Directory.Data
+    }).then(data => { })
+      .catch(err => { Filesystem.mkdir({ path: 'loanData', directory: Directory.Data }) })
   }
   getBalance() {
     this.bal = false;
@@ -480,13 +480,58 @@ export class HomeComponent {
                   directory: Directory.Data,
                 }).then(dele => {
                   if (lastEle == index) {
-                    this.audio.play();
-                    this.messageService.add({ severity: 'success', detail: 'Offline transactions were synced' });
-                    this.spinner = false;
-                    setTimeout(() => {
-                      this.getBalance();
-                      this.getAccountInfo();
-                    }, 5000);
+                    if (this.mode == 'MicroFinance') {
+                      Filesystem.readFile({
+                        path: `loanData/${localStorage.getItem('loanId')}.txt`,
+                        directory: Directory.Data,
+                        encoding: Encoding.UTF8,
+                      }).then(loanDetails => {
+                        let res: any[] = [...loanDetails.data]
+                        console.log(res);
+
+                        Promise.all(res.map(data => {
+                          if (data.paymentMode == 'offline') {
+                            data.actualPayment = data.id.scheduledEmi,
+                              data.paymentMode = "CBDC",
+                              data.collectionAgent = 1
+                          }
+                        })).then(() => {
+                          this.transationService.payEmi(res).subscribe(res => {
+                            Filesystem.writeFile({
+                              path: `loanData/${localStorage.getItem('loanId')}.txt`,
+                              data: res,
+                              directory: Directory.Data,
+                              encoding: Encoding.UTF8
+                            }).then(() => {
+                              this.audio.play();
+                              this.messageService.add({ severity: 'success', detail: 'Offline transactions were synced' });
+                              this.spinner = false;
+                              setTimeout(() => {
+                                this.getBalance();
+                                this.getAccountInfo();
+                              }, 5000);
+                            })
+                          })
+                        })
+
+
+                        // console.log(res,"updated");
+
+                        //  console.log(loanDetails);
+
+                      })
+
+                    }
+                    else {
+                      this.audio.play();
+                      this.messageService.add({ severity: 'success', detail: 'Offline transactions were synced' });
+                      this.spinner = false;
+                      setTimeout(() => {
+                        this.getBalance();
+                        this.getAccountInfo();
+                      }, 5000);
+                    }
+
                   }
                 })
 
