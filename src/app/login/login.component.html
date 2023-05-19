@@ -22,7 +22,7 @@
                             <label class="form-label" for="form2Example2"><strong class="text-danger">*</strong>Password</label>
                             <input type="password" id="form2Example2" class="form-control" formControlName="password" placeholder="1aB@" />
                         </div>
-                        <div *ngIf="loginForm.invalid && loginForm.touched" class="text-danger mb-4">
+                        <div *ngIf="loginForm.invalid" class="text-danger mb-4">
                             Enter the required Fileds
                         </div>
                         <!-- 2 column grid layout for inline styling -->
@@ -48,11 +48,13 @@
                         <!-- <button type="button" class="btn btn-color d-block mb-4 shadow">Login in</button> -->
 
                         <!-- Register buttons -->
-                        <div class="text-center">
-                            <p>Not a member? <a routerLink="/signup">Sign up</a></p>
-                            
-                        </div>
+                       
                     </form>
+
+
+                    <div class="text-center">
+                        <p>Not a member? <a routerLink="/signup">Sign up</a></p>
+                    </div>
                 </div>
             </div>
         </div>

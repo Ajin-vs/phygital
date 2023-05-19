@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { TransactionServiceService } from 'src/app/transactions-module/transaction-service.service';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-transaction-history',
@@ -12,78 +13,92 @@ export class TransactionHistoryComponent {
   sender: any = localStorage.getItem('sender')
   senderId = JSON.parse(this.sender).publicKey
   transactionDetails: any = [];
-  offlineTransaction:any=[]
+  offlineTransaction: any = []
   RIPPLE_EPOCH_DIFF = 0x386d4380;
 
-  constructor(private transactionService: TransactionServiceService) {
+  constructor(private transactionService: TransactionServiceService, private router: Router) {
 
   }
   ngOnInit() {
-    if(!localStorage.getItem('mode') || localStorage.getItem('mode') === 'Online'){
-      this.mode ='Online'
+    if (!localStorage.getItem('mode') || localStorage.getItem('mode') === 'Online') {
+      this.mode = 'Online'
       this.transactionService.getTxHistory(JSON.parse(this.sender).publicKey).subscribe(data => {
         this.transactionDetails = data.message.result.transactions
-        
+
       }, error => console.log('oops', error))
     }
-    else if(this.mode === 'Offline'){
-      this.transactionService.getOfflineTransactionHs.subscribe((data:any)=>{
-        data.map((tx:any)=>{
+    else if (this.mode === 'Offline') {
+      this.transactionService.getOfflineTransactionHs.subscribe((data: any) => {
+        data.map((tx: any) => {
           let name = JSON.stringify(tx.name).split("|");
-          console.log(name[4].slice(4,10));
-          
-          if(name[5] === undefined){
-            let tr ={
-              date:name[0],
-              mobile:name[1].includes(JSON.parse(this.sender).mobile) ? name[4].slice(0,10):name[1].slice(2,12),
-              amount:name[2],
-              type: name[3].includes('debit')? 'debit':'credit'
+          console.log(name[4].slice(4, 10));
+
+          if (name[5] === undefined) {
+            let tr = {
+              date: name[0],
+              mobile: name[1].includes(JSON.parse(this.sender).mobile) ? name[4].slice(0, 10) : name[1].slice(2, 12),
+              amount: name[2],
+              type: name[3].includes('debit') ? 'debit' : 'credit'
             }
             this.offlineTransaction.push(tr);
           }
-        
+
           // console.log(name);
-          
+
         })
         // console.log(this.offlineTransaction);
-        
+
       });
       // console.log("offlines",this.transactionService.getOfflineTransactionHs());
-      
-    }
-    else if(this.mode === 'MicroFinance'){
-      this.transactionService.getOfflineTransactionHs.subscribe((data:any)=>{
 
-        data.map((tx:any)=>{
-          console.log(data,"finance");
-          
+    }
+    else if (this.mode === 'MicroFinance') {
+      this.transactionService.getOfflineTransactionHs.subscribe((data: any) => {
+
+        data.map((tx: any) => {
+          // console.log(data, "finance");
           let name = JSON.stringify(tx.name).split("|");
-          console.log(name,"name of file");
-          
+          // console.log(name, "name of file");
+
           // console.log(name[],"d");
-          if(name[4] !== undefined && name[4].includes('finance')){
-            let tr ={
-              date:name[0],
-              // mobile:name[1]==JSON.parse(this.sender).mobile? name[4]:name[1],
-              mobile:name[1],
-              amount:name[2],
-              type: 'debit'
-            }
-            this.offlineTransaction.push(tr);
+          if (name[4] !== undefined && name[4].includes('finance')) {
+
+            Filesystem.readFile({
+              path: `outbound/${tx.name}`,
+              directory: Directory.Data,
+              encoding: Encoding.UTF8,
+            }).then(data => {
+              // console.log(data);
+              let tr = {
+                date: name[0],
+                // mobile:name[1]==JSON.parse(this.sender).mobile? name[4]:name[1],
+                mobile: name[1],
+                amount: name[2],
+                type: 'debit',
+                transaction: `${data.data }|'finance'`
+              }
+              this.offlineTransaction.push(tr);
+            });
+
+
           }
-        
+
           // console.log(name);
-          
+
         })
         // console.log(this.offlineTransaction);
-        
+
       });
       // console.log("offlines",this.transactionService.getOfflineTransactionHs());
-      
-    }
-    
-  }
 
+    }
+
+  }
+  genQr(trnx: any) {
+    console.log(trnx);
+    localStorage.setItem('transaction',trnx);
+    this.router.navigateByUrl('/qrCode')
+  }
   public rippleTimeToISOTime(rippleTime: any) {
     return new Date(this.rippleTimeToUnixTime(rippleTime)).toISOString();
   }

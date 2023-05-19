@@ -17,10 +17,12 @@
             <p>{{a.date | slice:1:25 }}</p>
         </div>
         <div class=" mt-5 col-4">
-            <p *ngIf="a.type == 'credit'" class="text-success text-left">
-                +{{a.amount}}</p>
-            <p  *ngIf="a.type == 'debit'" class="text-danger text-left">
-                -{{a.amount}}</p>
+            <strong *ngIf="a.type == 'credit'" class="text-success text-left">
+                +{{a.amount}}</strong>
+            <strong *ngIf="a.type == 'debit'" class="text-danger text-left">
+                -{{a.amount}}</strong>
+                <strong class="pi pi-qrcode ms-3" *ngIf="mode == 'MicroFinance'" (click)="genQr(a.transaction)"></strong>
+
         </div>
     </div>
 

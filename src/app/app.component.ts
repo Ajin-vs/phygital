@@ -106,7 +106,13 @@ export class AppComponent {
       this.speedTestService.getKbps(
         {
           iterations: 1,
+          file: {
+            path: 'assets/images/test.jpeg',
+            size: 100000,
+            shouldBustCache:true
+          },
           retryDelay: 10000,
+          
         }
       ).subscribe(
         (speed) => {

@@ -6,6 +6,7 @@ import { ConnectionService, ConnectionServiceOptions, ConnectionState } from 'ng
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import * as xrpl from 'xrpl'
 import { MessageService } from 'primeng/api';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-loans',
   templateUrl: './loans.component.html',
@@ -25,13 +26,19 @@ export class LoansComponent {
   status!: string;
   currentState!: ConnectionState;
   alertAudio = new Audio("../../../assets/audio/error-call-to-attention-129258.mp3");
-
+  displayModal=false
+  validate=false
+  sceduledAmt=0
   mfc ={
     mobile: 9400501678,
     mFPublickKey :'rseguVwgWkLTGoAw8HMqvvQ1G3ZZNRGKKZ'
 
   }
   sender: any = localStorage.getItem('sender')
+  loanForm = new FormGroup({
+    ind :new FormControl('',Validators.required),
+    amount: new FormControl('',Validators.required)
+  })
   constructor(private messageService: MessageService,private connectionService: ConnectionService,private router : Router, private transactionService: TransactionServiceService,   private route: ActivatedRoute){
     this.justifyOptions = [
       { label: 'ON', value: 'Online' },
@@ -41,6 +48,17 @@ export class LoansComponent {
   }
 
   ngOnInit(){
+    // Filesystem.readdir({
+    //   path: 'loanData',
+    //   directory: Directory.Data
+    // }).then(data => { 
+    //   console.log("data inside loanData",data);
+      
+    // })
+    //   .catch(err => { Filesystem.mkdir({ path: 'loanData', directory: Directory.Data }) })
+
+
+
     this.loanDetails =JSON.parse(this.loans)
     this.loanId = this.route.snapshot.paramMap.get('loanId');
     localStorage.setItem('loanId',this.loanId)
@@ -55,17 +73,31 @@ export class LoansComponent {
               path: '/loanData',
               directory: Directory.Data
             }).then(data => {
+              // console.log(data,"herer data");
+              
               if (!(data.files.length > 0)) {
+                console.log("herer");
+                
                 // this.getBalance();
                 // this.getAccountInfo();
                 this.transactionService.getLoanTenure(this.loanId).subscribe(tenure=>{
                   this.loanrepaymenthistory = tenure;
-                  Filesystem.writeFile({
-                    path: `loanData/${this.loanId}.txt`,
-                    data: this.loanrepaymenthistory,
-                    directory: Directory.Data,
-                    encoding: Encoding.UTF8
-                  })
+                  console.log(this.loanrepaymenthistory,"repayment history");
+                  
+                  if(this.loanrepaymenthistory.length > 0){                    
+                    Filesystem.writeFile({
+                      path: `loanData/${JSON.stringify(this.loanId)}.txt`,
+                      data: JSON.stringify(this.loanrepaymenthistory),
+                      directory: Directory.Data,
+                      encoding: Encoding.UTF8
+                    }).then(res=>{
+
+                    }).catch(err=>{
+                      console.log("error from write");
+                      
+                    })
+                  }
+                
                 })
     
               }
@@ -77,7 +109,7 @@ export class LoansComponent {
                 // this.balance = localStorage.getItem('balance');
               }
             }).catch(err => {
-              // console.log("here",err);
+              console.log("here",err);
 
               // this.getBalance();
               // this.getAccountInfo();
@@ -97,57 +129,70 @@ export class LoansComponent {
   }
 
   paid(method:any,ind:any,amt:any){
-    console.log(method,ind);
-    // let newDt = [...this.loanrepaymenthistory]
-    if(method == null){
-      if(Number (localStorage.getItem('balance'))< amt){
-        console.log("insuffient balance");
-        this.messageService.add({ severity: 'error', detail: 'Insuffient balance.' });
-        this.alertAudio.play();
+    this.sceduledAmt = amt
+    if(method == null){ 
+        this.displayModal= true
+        this.loanForm.patchValue({amount:amt,ind:ind})
+        console.log(this.loanForm.value);
         
-      }
-      else{
-        let seq = Number(localStorage.getItem('sequence')) +1
-        // const client = new xrpl.Client(this.net)
-        // client.connect().then(conn => {
-        const standby_wallet = xrpl.Wallet.fromSeed(JSON.parse(this.sender).pSeed);  
-        const signed:any = this.generateSignedTransaction(JSON.parse(this.sender).pSeed,amt)
-        // const  = standby_wallet.sign(prepared);
-        let crtDate = new Date();
-      
-        // / let trx = `${signed.tx_blob|${}}`
-      // localStorage.setItem('transaction', `${signed.tx_blob}|${}`);
-      Filesystem.writeFile({
-        path: `outbound/${crtDate}|${this.mfc.mobile}|${amt}|${JSON.parse(this.sender).mobile}|'finance' | .txt`,
-        data: `${signed.tx_blob}|${this.mfc.mobile}|${amt}|${JSON.parse(this.sender).mobile}`,
-        directory: Directory.Data,
-        encoding: Encoding.UTF8
-      }).then(res=>{
-        localStorage.setItem('transaction', `${signed.tx_blob}|${this.mfc.mobile}|${amt}|${JSON.parse(this.sender).mobile}|'finance'`);
-        localStorage.setItem('sequence',JSON.stringify(seq));
-        let latestBalance =Number(localStorage.getItem('balance')) - amt
-        localStorage.setItem('balance',JSON.stringify(latestBalance) )
-        this.loanrepaymenthistory[ind].paymentMode = 'offline'
-        Filesystem.writeFile({
-          path: `loanData/${this.loanId}.txt`,
-          data: this.loanrepaymenthistory,
-          directory: Directory.Data,
-          encoding: Encoding.UTF8
-        }).then(()=>{
-  
-        })
-        this.router.navigateByUrl('/qrCode')
-      })
-      }
-     
-      
     }
    else{
-    // alert( "already paid")
+    console.log( "already paid",ind,amt)
    }
     
   }
+  onSubmit(){
+    let amt =this.loanForm.controls['amount'].value 
+    let ind:any = this.loanForm.controls['ind'].value 
+    if(Number(localStorage.getItem('balance')) < Number(amt)){
+      console.log("insuffient balance");
+      this.messageService.add({ severity: 'error', detail: 'Insuffient balance.' });
+      this.alertAudio.play();
+      
+    }else{
 
+    if(Number(this.loanForm.controls['amount'].value) !== this.sceduledAmt ){
+      console.log( this.loanrepaymenthistory[this.loanrepaymenthistory.length-1]);
+      
+      this.loanrepaymenthistory[this.loanrepaymenthistory.length-1].id.scheduledEmi = -1;
+    }
+    
+    console.log(this.loanForm.controls['amount'].value);
+   
+    let seq = Number(localStorage.getItem('sequence')) +1
+    // const client = new xrpl.Client(this.net)
+    // client.connect().then(conn => {
+    const standby_wallet = xrpl.Wallet.fromSeed(JSON.parse(this.sender).pSeed);  
+    const signed:any = this.generateSignedTransaction(JSON.parse(this.sender).pSeed,amt)
+    // const  = standby_wallet.sign(prepared);
+    let crtDate = new Date();
+  
+    // / let trx = `${signed.tx_blob|${}}`
+  // localStorage.setItem('transaction', `${signed.tx_blob}|${}`);
+  Filesystem.writeFile({
+    path: `outbound/${crtDate}|${this.mfc.mobile}|${amt}|${JSON.parse(this.sender).mobile}|'finance' | .txt`,
+    data: `${signed.tx_blob}|${this.mfc.mobile}|${amt}|${JSON.parse(this.sender).mobile}`,
+    directory: Directory.Data,
+    encoding: Encoding.UTF8
+  }).then(res=>{
+    localStorage.setItem('transaction', `${signed.tx_blob}|${this.mfc.mobile}|${amt}|${JSON.parse(this.sender).mobile}|'finance'`);
+    localStorage.setItem('sequence',JSON.stringify(seq));
+    let latestBalance =Number(localStorage.getItem('balance')) - Number(amt)
+    localStorage.setItem('balance',JSON.stringify(latestBalance) )
+    this.loanrepaymenthistory[ind].paymentMode = 'offline';
+    this.loanrepaymenthistory[ind].id.scheduledEmi = amt
+    this.loanrepaymenthistory = [...this.loanrepaymenthistory]
+    Filesystem.writeFile({
+      path: `loanData/${JSON.stringify(this.loanId)}.txt`,
+      data: JSON.stringify(this.loanrepaymenthistory),
+      directory: Directory.Data,
+      encoding: Encoding.UTF8
+    }).then(()=>{
+      this.router.navigateByUrl('/qrCode')
+    })
+  })
+}
+  }
   generateSignedTransaction(pSeed:any,amt:any){
     
 
@@ -190,13 +235,18 @@ export class LoansComponent {
 
 
   readLoanFile(loanId:any){
+    console.log("here read",loanId);
+    
     Filesystem.readFile({
-      path:`loanData/${loanId}.txt`,
+      path:`loanData/${JSON.stringify(loanId)}.txt`,
       directory: Directory.Data,
-      encoding: Encoding.UTF8,
+      encoding: Encoding.UTF8
     }).then(data=>{
-      console.log("data",data);
-      this.loanrepaymenthistory = data.data
+      // console.log("data",JSON.stringify(data));
+      this.loanrepaymenthistory = JSON.parse( data.data)
+    }).catch(err=>{
+      console.log("error unknown file");
+      
     })
   }
   changeMode(mode: string) {

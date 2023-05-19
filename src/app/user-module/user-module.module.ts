@@ -8,7 +8,7 @@ import { HomeComponent } from './home/home.component';
 import { UserParentComponent } from './user-parent/user-parent.component';
 import { TransactionHistoryComponent } from './transaction-history/transaction-history.component';
 import {SelectButtonModule} from 'primeng/selectbutton';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SidebarModule } from 'primeng/sidebar';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AccordionModule } from 'primeng/accordion';
@@ -46,7 +46,9 @@ import { LoansComponent } from './loans/loans.component';
     OverlayModule,
     ToastModule,
     SpeedTestModule,
-    BadgeModule
+    BadgeModule,
+    ReactiveFormsModule
+
   ],
   providers: [MessageService]
 })

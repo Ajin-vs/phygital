@@ -7,7 +7,7 @@ import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
   providedIn: 'root'
 })
 export class TransactionServiceService {
-  public domain ='http://mvp-phygital-wallet.ap-south-1.elasticbeanstalk.com'
+  public domain ='http://15.206.203.178:3000'
   public customerDomain ='http://15.206.203.178:8080'
   constructor(public httpClient: HttpClient) { }
 

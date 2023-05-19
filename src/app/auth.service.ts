@@ -6,7 +6,7 @@ import { delay, Observable, of, tap } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-public domain ='http://mvp-phygital-wallet.ap-south-1.elasticbeanstalk.com'
+public domain ='http://15.206.203.178:3000'
 isUserLoggedIn: boolean = false;
 
   constructor(private httpClient: HttpClient) { }

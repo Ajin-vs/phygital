@@ -71,7 +71,6 @@ export class HomeComponent {
             this.connectionStatus = true;
 
 
-
             this.getNetSpeed();
             // },10000)
             Filesystem.readdir({
@@ -91,32 +90,28 @@ export class HomeComponent {
               this.getBalance();
               this.getAccountInfo();
             });
-
-            Filesystem.readdir({
-              path: '/inbound',
-              directory: Directory.Data
-            }).then(data => {
-              if (!(data.files.length > 0)) {
-                // this.getBalance();
-                // this.getAccountInfo();
-                this.transationService.getLoanInfo(JSON.parse(this.sender).userId).subscribe(loans => {
-                  // console.log(loans);
-                  this.loans = loans;
-                  localStorage.setItem('loans', JSON.stringify(this.loans))
-                })
-
-              }
-              else {
-                let lo: any = localStorage.getItem('loans');
-                this.loans = JSON.parse(lo)
-                // this.balance = localStorage.getItem('balance');
-              }
-            }).catch(err => {
-              // console.log("here",err);
-
-              // this.getBalance();
-              // this.getAccountInfo();
+            this.transationService.getLoanInfo(JSON.parse(this.sender).userId).subscribe(loans => {
+              this.loans = loans;
+              localStorage.setItem('loans', JSON.stringify(this.loans))
             })
+
+
+            // Filesystem.readdir({
+            //   path: '/inbound',
+            //   directory: Directory.Data
+            // }).then(data => {
+            //   if (!(data.files.length > 0)) {
+            //     // this.getBalance();
+            //     // this.getAccountInfo();
+               
+            //   }
+             
+            // }).catch(err => {
+            //   // console.log("here",err);
+
+            //   // this.getBalance();
+            //   // this.getAccountInfo();
+            // })
 
           } else {
             this.status = 'OFFLINE';
@@ -275,6 +270,11 @@ export class HomeComponent {
       this.speedTestService.getKbps(
         {
           iterations: 1,
+          file: {
+            path: 'assets/images/test.jpeg',
+            size: 100000,
+            shouldBustCache:true
+          },
           retryDelay: 10000,
         }
       ).subscribe(
@@ -342,7 +342,7 @@ export class HomeComponent {
         directory: Directory.Data
       }).then(data => {
         if (data.files.length > 0) {
-          this.messageService.add({ severity: 'error', detail: 'Zync all offline transaction before doing Online.' });
+          this.messageService.add({ severity: 'error', detail: 'Sync all offline transaction before doing Online.' });
           this.alertAudio.play();
         }
         else {
@@ -458,7 +458,7 @@ export class HomeComponent {
     }).then((data) => {
       console.log(data, "outbound");
       if (!(data.files.length > 0)) {
-        this.messageService.add({ severity: 'error', detail: 'There are No offline transactions to zync' });
+        this.messageService.add({ severity: 'error', detail: 'There are No offline transactions to sync' });
         this.alertAudio.play();
       }
       else {
@@ -482,11 +482,11 @@ export class HomeComponent {
                   if (lastEle == index) {
                     if (this.mode == 'MicroFinance') {
                       Filesystem.readFile({
-                        path: `loanData/${localStorage.getItem('loanId')}.txt`,
+                        path: `loanData/${JSON.stringify(localStorage.getItem('loanId'))}.txt`,
                         directory: Directory.Data,
                         encoding: Encoding.UTF8,
                       }).then(loanDetails => {
-                        let res: any[] = [...loanDetails.data]
+                        let res: any[] = [...JSON.parse(loanDetails.data)]
                         console.log(res);
 
                         Promise.all(res.map(data => {
@@ -498,8 +498,8 @@ export class HomeComponent {
                         })).then(() => {
                           this.transationService.payEmi(res).subscribe(res => {
                             Filesystem.writeFile({
-                              path: `loanData/${localStorage.getItem('loanId')}.txt`,
-                              data: res,
+                              path: `loanData/${JSON.stringify(localStorage.getItem('loanId'))}.txt`,
+                              data: JSON.stringify(res),
                               directory: Directory.Data,
                               encoding: Encoding.UTF8
                             }).then(() => {
@@ -548,7 +548,7 @@ export class HomeComponent {
     }
     )
       .catch(err => {
-        this.messageService.add({ severity: 'error', detail: 'There are No offline transactions to zync' });
+        this.messageService.add({ severity: 'error', detail: 'There are No offline transactions to sync' });
       })
   }
 
@@ -558,7 +558,7 @@ export class HomeComponent {
       directory: Directory.Data
     }).then(data => {
       if (data.files.length > 0) {
-        this.messageService.add({ severity: 'error', detail: 'Zync previous offline transaction before doing other.' });
+        this.messageService.add({ severity: 'error', detail: 'Sync previous offline transaction before doing other.' });
         this.alertAudio.play();
       } else {
         if (tx == 'pay') {
@@ -573,14 +573,6 @@ export class HomeComponent {
   }
 
 
-
-  async getInbound() {
-    let inBoundFiles = await Filesystem.readFile({
-      path: 'inbound',
-      directory: Directory.Data
-    })
-    return inBoundFiles;
-  }
 
   generateSignedTransaction(pSeed: any) {
 
