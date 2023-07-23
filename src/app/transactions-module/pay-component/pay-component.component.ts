@@ -10,8 +10,8 @@ import * as cp from 'crypto-js';
 })
 export class PayComponentComponent {
 
-  constructor(private transactionService: TransactionServiceService){
-window.crypto.subtle.generateKey(
+  constructor(private transactionService: TransactionServiceService) {
+    window.crypto.subtle.generateKey(
       {
         name: 'RSASSA-PKCS1-v1_5',
         modulusLength: 2048,
@@ -20,41 +20,47 @@ window.crypto.subtle.generateKey(
       },
       true,
       ['sign', 'verify']
-    ).then(keyPair=>{
+    ).then(keyPair => {
       window.crypto.subtle.exportKey(
         'spki',
         keyPair.publicKey
-      ).then(publicKey=>{
-        console.log(publicKey,"public key");
+      ).then(publicKey => {
+        console.log(publicKey, "public key");
 
         const message = 'Hello, world!';
-       window.crypto.subtle.sign(
+        console.log( new TextEncoder().encode(message));
+        
+        window.crypto.subtle.sign(
           {
-            name: 'RSASSA-PKCS1-v1_5'
+            name: 'RSASSA-PKCS1-v1_5',
+            hash: 'SHA256'
           },
           keyPair.privateKey,
           new TextEncoder().encode(message)
-        ).then(signature=>{
-          console.log(signature,"signature");
+        ).then(signature => {
+          console.log(signature, "signature");
+          console.log(keyPair.publicKey,"keyPair.publicKey");
+          
           window.crypto.subtle.verify(
             {
-              name: 'RSASSA-PKCS1-v1_5'
+              name: 'RSASSA-PKCS1-v1_5',
+              hash: 'sha256'
             },
             keyPair.publicKey,
             signature,
             new TextEncoder().encode(message)
-          ).then(res=>{
-            console.log(res,"response");
-            
+          ).then(res => {
+            console.log(res, "responses");
+
           })
         })
       })
-      
+
     })
 
 
 
-   
+
 
   }
   speak = async () => {
@@ -69,57 +75,177 @@ window.crypto.subtle.generateKey(
   };
 
 
-  getSupportedLanguages = async () => {
-    const languages = await TextToSpeech.getSupportedLanguages();
-    console.log(languages);
-    
-    this.transactionService.sign().subscribe(data=>{
-      // console.log(data);
-      let bufferObj =data
-      console.log(bufferObj.sign);
 
-      let signa = bufferObj.sign
+
+  // importPublicKey(publicKey:any){
+  //   return crypto.subtle.importKey(
+  //     'spki',
+  //     this.str2ab(publicKey),
+  //     {
+  //       name: 'RSA-OAEP',
+  //       hash: { name: 'SHA-256' },
+  //     },
+  //     true,
+  //     ['verify']
+  //   );
+  // }
+
+
+
+  getMessageEncoding(data: any) {
+    let enc = new TextEncoder();
+    return enc.encode(data);
+  }
+  str2ab(str: any) {
+    const buf = new ArrayBuffer(str.length);
+    const bufView = new Uint8Array(buf);
+    for (let i = 0, strLen = str.length; i < strLen; i++) {
+      bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
+  }
+  base64ToArrayBuffer(base64: string): ArrayBuffer {
+    const binaryString = window.atob(base64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+  }
+  getSupportedLanguages = async () => {
+    const languages = TextToSpeech.getSupportedLanguages();
+
+    this.transactionService.sign().subscribe(async res => {
+      console.log(res,"Api response");
       
-      let signature = Buffer.from(signa, "utf8");
-      const message = 'this need to be verified';
-      // signature=data
-      const l1='-----BEGIN PUBLIC KEY-----\n'
-      const l2='MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0z7QeLa/t8TmZu+6IYnKfAlfdroJwpT0zkNuAzGCM5hT8SYtpla2bda0pEeK+VusxBnSrG+LXEtOlqNBaP4TgIQIAUisfQivdVSzpFWruIs4FWPqT3aDc6PzMZ1vDgn1FcHpeJ7GNTL7uGLsV3DzFFNI7l67H2tvJK1Q/oP9lI2XrctA1WWkJlPhMPgQmBjaR11IlSEHJhT283HWSTYPrO6VdMNVlq9lC8N/eJO2V2FtpAhtFgI9jAA/3TAxF4nL2+w+q0sHv4MocaNo2/9gMwAMS+gJjJEikzFBVgjslrm3mf0Dm0pP4MCmC9vy9EnpLaA0P7BWOs2Ls4jK2WJtlwIDAQAB'
-      const l3= '\n-----END PUBLIC KEY-----\n'
-      let p = l1+l2+l3
-      const keyData = new TextEncoder().encode(p);
-       window.crypto.subtle.importKey(
-        "spki",
-  new TextEncoder().encode(p),
-  { name: "RSA-OAEP", hash: "SHA-256" },
-  false,
-  ["encrypt"]
-      ).then(publicKey=>{
-        console.log(publicKey,"public key");
+// try asyn await
+const publicKey = res.publicKeyPEM;
+const data = res.data;
+const signature = res.signatureBase64;
+
+// Decode the signature from base64 to Uint8Array
+const signatureArrayBuffer = this.base64ToArrayBuffer(signature);
+console.log(signatureArrayBuffer,"signature");
+
+// Fetch the part of the PEM string between header and footer
+const pemHeader = "-----BEGIN PUBLIC KEY-----";
+const pemFooter = "-----END PUBLIC KEY-----";
+const pemContents = publicKey.substring(
+  pemHeader.length,
+  publicKey.length - pemFooter.length - 2,
+);
+console.log(pemContents,"pemContents");
+
+// Base64 decode the string to get the binary data
+const binaryDerString = window.atob(pemContents);
+console.log(binaryDerString);
+
+// Convert from a binary string to an ArrayBuffer
+const binaryDer = this.str2ab(binaryDerString);
+console.log(binaryDer,"binaryDer");
+try {
+  // Import the public key as a CryptoKey
+  const importedPublicKey = await window.crypto.subtle.importKey(
+    "spki",
+    binaryDer,
+    {
+      name: "RSASSA-PKCS1-v1_5",
+      hash: "SHA-256",
+    },
+    true,
+    ['verify'],
+  );
+
+  // Get the encoded data as Uint8Array
+  const encoded = this.getMessageEncoding(data);
+console.log(importedPublicKey,"importedPublicKey");
+
+  // Verify the signature
+  const verificationResult = await window.crypto.subtle.verify(
+    {
+      name: 'RSASSA-PKCS1-v1_5',
+      hash: 'sha-256'
+    },
+    importedPublicKey,
+    signatureArrayBuffer,
+    encoded,
+  );
+
+  console.log('Verification Result:', verificationResult);
+
+} catch (error) {
+  console.error('Error verifying the signature:', error);
+}
+
+      // console.log(res, "response from API");
+
+      // const publicKey = res.publicKeyPEM;
+      // const data = res.data;
+      // const signature = res.signatureBase64;
+      // console.log(publicKey);
+      // // fetch the part of the PEM string between header and footer
+      // const pemHeader = "-----BEGIN PUBLIC KEY-----";
+      // const pemFooter = "-----END PUBLIC KEY-----";
+      // const pemContents = publicKey.substring(
+      //   pemHeader.length,
+      //   publicKey.length - pemFooter.length - 2,
+      // );
+      // console.log(pemContents);
+      // let bSign = this.base64ToArrayBuffer(signature)
+      // console.log(bSign);
+
+      // // base64 decode the string to get the binary data
+      // const binaryDerString = window.atob(pemContents);
+      // // convert from a binary string to an ArrayBuffer
+      // const binaryDer = this.str2ab(binaryDerString);
+
+      // window.crypto.subtle.importKey(
+      //   "spki",
+      //   binaryDer,
+      //   {
+      //     name: "RSASSA-PKCS1-v1_5",
+      //     hash: "SHA-256",
+      //   },
+      //   true,
+      //   ['verify'],
+      // ).then(publicKey => {
+      //   let encoded = this.getMessageEncoding(data);
+
+      //   console.log(publicKey);
+      //   console.log(bSign);
+      //   console.log(encoded);
         
-        window.crypto.subtle.verify(
-          {
-            name: 'RSASSA-PKCS1-v1_5'
-          },
-          publicKey,
-          signature,
-          new TextEncoder().encode(message)
-        ).then(res=>{
-          console.log(res,"response");
-          
-        })
-      })
-     
-      
+      //   window.crypto.subtle.verify(
+      //     {
+      //       name: 'RSASSA-PKCS1-v1_5',
+      //       hash: 'sha256'
+      //     },
+      //     publicKey,
+      //     bSign,
+      //     encoded,
+      //   );
+      // }).then(verificationResult => {
+      //   console.log(verificationResult, "status");
+
+      // }).catch((error) => {
+      //   console.error('Error verifying the signature:', error);
+      // });
+
+
+
     })
+
+
+
+
   };
-  
+
   getSupportedVoices = async () => {
     const voices = await TextToSpeech.getSupportedVoices();
     console.log(voices);
-    
+
   };
-  
+
   isLanguageSupported = async (lang: string) => {
     const isSupported = await TextToSpeech.isLanguageSupported({ lang });
   };
