@@ -7,8 +7,9 @@ import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
   providedIn: 'root'
 })
 export class TransactionServiceService {
-  public domain ='http://15.206.203.178:3000'
-  public customerDomain ='http://15.206.203.178:8080'
+  // public domain ='http://15.206.203.178:3000'
+  public domain ='http://3.110.215.188:3000'
+  public customerDomain ='http://3.110.215.188:8080'
   constructor(public httpClient: HttpClient) { }
 
   public getUser(number:number):Observable<any>{
